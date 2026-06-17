@@ -3,797 +3,710 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>うんこ道 〜めざせ世界一の黄金便〜</title>
+<title>うんログ 〜毎日の腸活ダイアリー〜</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#5b3a1e;
-    --cream:#fff4dd;
-    --paper:#fffaf0;
-    --accent:#ff914d;
-    --accent2:#ffb347;
-    --good:#7cc15b;
-    --warn:#ff8a5c;
-    --gold:#f5c518;
-    --pink:#ffb3b3;
-    --intestine:#ff9aa9;
-    --intestine-d:#e57689;
+    --ink:#5b3a1e; --cream:#fff4dd; --paper:#fffaf0;
+    --accent:#ff914d; --accent2:#ffb347; --good:#7cc15b; --warn:#ff8a5c;
+    --gold:#f5c518; --intestine:#ff9aa9; --line:#e6d4b3;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;
-    color:var(--ink);
-    background:
-      radial-gradient(circle at 18% 12%, #fff7e6, transparent 45%),
-      radial-gradient(circle at 85% 8%, #ffe9c9, transparent 40%),
-      linear-gradient(160deg,#ffe6c0 0%, #ffd9a8 55%, #ffcf9a 100%);
-    background-attachment:fixed;
-    overflow:hidden; user-select:none;-webkit-user-select:none;
-    -webkit-text-size-adjust:100%;
+    font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,#ffe6c0,#ffd9a8 55%,#ffcf9a);background-attachment:fixed;
+    overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-text-size-adjust:100%;
   }
-  /* phone-shaped centered column */
-  #app{
-    position:relative;width:100%;max-width:460px;height:100dvh;height:100vh;margin:0 auto;
-    display:flex;flex-direction:column;overflow:hidden;
-    background:linear-gradient(175deg, #fffdf8, #fff3e0);
-    box-shadow:0 0 60px rgba(91,58,30,.22);
-  }
-  @media(min-width:480px){ #app{border-left:2px solid rgba(91,58,30,.12);border-right:2px solid rgba(91,58,30,.12);} }
-
+  #app{position:relative;width:100%;max-width:460px;height:100dvh;height:100vh;margin:0 auto;
+    display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(175deg,#fffdf8,#fff3e0);
+    box-shadow:0 0 60px rgba(91,58,30,.22);}
+  @media(min-width:480px){#app{border-left:2px solid rgba(91,58,30,.12);border-right:2px solid rgba(91,58,30,.12);}}
   .screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;}
-  .screen.active{display:flex;animation:fadein .35s ease;}
+  .screen.active{display:flex;animation:fadein .3s ease;}
   @keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
-  /* ============ TITLE ============ */
-  #screen-title{align-items:center;justify-content:center;text-align:center;padding:30px 24px;}
-  .logo{
-    font-family:'Mochiy Pop One',sans-serif;line-height:1.04;color:#a4652f;
-    font-size:clamp(40px,15vw,64px);
-    text-shadow:0 3px 0 #5b3a1e, 0 7px 0 rgba(91,58,30,.18), 0 12px 26px rgba(91,58,30,.35);
-    transform:rotate(-3deg);
-  }
-  .logo .sub{display:block;font-size:.34em;color:#fff;letter-spacing:.12em;margin-top:10px;transform:rotate(1.5deg);
-    text-shadow:0 2px 0 #5b3a1e;}
-  .title-poop{font-size:clamp(80px,26vw,120px);margin:6px 0 4px;filter:drop-shadow(0 8px 14px rgba(91,58,30,.3));animation:bob 2.4s ease-in-out infinite;}
-  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-10px) rotate(4deg);}}
-  .pitch{font-weight:700;font-size:clamp(13px,3.6vw,15px);line-height:1.9;color:#6b4a2c;margin:18px 0 4px;max-width:320px;}
-  .pitch b{color:#c8761f;}
-  .best-badge{margin-top:14px;font-weight:900;font-size:13px;color:#a87900;background:#fff5cf;
-    border:2px solid #e8c14a;border-radius:999px;padding:6px 16px;box-shadow:0 3px 0 rgba(168,121,0,.25);}
-  .btn{
-    cursor:pointer;border:none;font-family:'Mochiy Pop One',sans-serif;color:#fff;
-    background:linear-gradient(180deg,var(--accent2),var(--accent));
-    border:3px solid var(--ink);border-radius:999px;
-    box-shadow:0 6px 0 var(--ink), 0 12px 22px rgba(91,58,30,.32);
-    transition:transform .08s, box-shadow .08s; -webkit-appearance:none;
-  }
+  .btn{cursor:pointer;border:none;font-family:'Mochiy Pop One',sans-serif;color:#fff;
+    background:linear-gradient(180deg,var(--accent2),var(--accent));border:3px solid var(--ink);border-radius:999px;
+    box-shadow:0 6px 0 var(--ink),0 12px 22px rgba(91,58,30,.3);transition:transform .08s,box-shadow .08s;-webkit-appearance:none;}
   .btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink);}
-  .btn.big{font-size:clamp(22px,6vw,28px);padding:15px 50px;margin-top:22px;}
+  .btn:disabled{opacity:.45;filter:grayscale(.5);}
   .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 rgba(91,58,30,.4);}
-  .btn.sm{font-size:15px;padding:10px 26px;font-family:'Zen Maru Gothic',sans-serif;font-weight:900;}
+  .btn.sm{font-size:15px;padding:10px 22px;font-family:'Zen Maru Gothic',sans-serif;font-weight:900;border-width:2.5px;
+    box-shadow:0 4px 0 var(--ink);}
+  .btn.sm:active{box-shadow:0 1px 0 var(--ink);}
 
-  /* ============ PLAY ============ */
-  .topbar{
-    flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
-    padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 8px;
-  }
-  .meal-tag{display:flex;align-items:center;gap:9px;}
-  .meal-tag .icon{font-size:26px;}
-  .meal-tag .t1{font-family:'Mochiy Pop One',sans-serif;font-size:17px;line-height:1;color:#5b3a1e;}
+  /* topbar */
+  .top{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0) + 12px) 14px 8px;}
+  .top .back{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);background:rgba(255,255,255,.85);
+    font-size:18px;cursor:pointer;box-shadow:0 3px 0 rgba(91,58,30,.28);flex:0 0 auto;}
+  .top h2{font-family:'Mochiy Pop One',sans-serif;font-size:19px;color:#5b3a1e;flex:1;}
+  .top .sp{flex:0 0 38px;}
+
+  /* ===== HOME ===== */
+  #screen-home{align-items:center;text-align:center;padding:0;}
+  .home-hd{padding:calc(env(safe-area-inset-top,0) + 26px) 20px 8px;}
+  .logo{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(40px,13vw,58px);line-height:1.05;color:#a4652f;
+    text-shadow:0 3px 0 #5b3a1e,0 7px 0 rgba(91,58,30,.18),0 12px 24px rgba(91,58,30,.32);transform:rotate(-2deg);}
+  .logo .sub{display:block;font-size:.3em;color:#fff;letter-spacing:.1em;margin-top:9px;transform:rotate(1deg);text-shadow:0 2px 0 #5b3a1e;}
+  .home-poop{font-size:clamp(58px,17vw,80px);margin:10px 0 2px;animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(91,58,30,.3));}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-9px) rotate(3deg);}}
+  .home-body{width:100%;padding:6px 22px calc(env(safe-area-inset-bottom,0) + 20px);display:flex;flex-direction:column;gap:13px;align-items:center;}
+  .streak{background:#fff5cf;border:2px solid #e8c14a;border-radius:16px;padding:10px 16px;font-weight:900;font-size:13px;color:#a87900;
+    box-shadow:0 3px 0 rgba(168,121,0,.22);width:100%;max-width:340px;}
+  .streak b{font-size:1.25em;}
+  .home-card{width:100%;max-width:340px;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;
+    background:var(--paper);border:3px solid var(--ink);border-radius:22px;padding:16px 18px;
+    box-shadow:0 6px 0 var(--ink),0 10px 18px rgba(91,58,30,.18);transition:transform .08s,box-shadow .08s;}
+  .home-card:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink);}
+  .home-card.hero{background:linear-gradient(135deg,#ffe9c2,#ffd79a);}
+  .home-card .ic{font-size:38px;flex:0 0 auto;}
+  .home-card .tx{flex:1;}
+  .home-card .tt{font-family:'Mochiy Pop One',sans-serif;font-size:18px;color:#5b3a1e;}
+  .home-card .ds{font-size:11.5px;font-weight:700;color:#9a7a55;margin-top:3px;line-height:1.5;}
+  .home-card .arr{font-size:20px;color:#c2a070;font-weight:900;}
+  .tag-main{display:inline-block;font-size:9px;font-weight:900;background:var(--accent);color:#fff;border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle;}
+
+  /* ===== LOG RECORD ===== */
+  .sect{padding:6px 18px;}
+  .photo-box{width:100%;aspect-ratio:1/1;max-height:46vh;border-radius:22px;border:3px dashed #d8bd92;
+    background:#fff8ee;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    color:#b29a78;font-weight:900;overflow:hidden;position:relative;cursor:pointer;}
+  .photo-box.has{border-style:solid;border-color:var(--line);cursor:default;}
+  .photo-box img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-box .ph-ic{font-size:50px;}
+  .photo-box .ph-tx{font-size:13px;text-align:center;line-height:1.6;padding:0 20px;}
+  .retake{position:absolute;right:10px;bottom:10px;background:rgba(91,58,30,.82);color:#fff;border:none;border-radius:999px;
+    padding:7px 14px;font-weight:900;font-size:12px;cursor:pointer;font-family:'Zen Maru Gothic',sans-serif;}
+  .lbl{font-weight:900;font-size:14px;color:#5b3a1e;margin:16px 0 9px;display:flex;align-items:center;gap:6px;}
+  .shape-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .shape-opt{cursor:pointer;background:var(--paper);border:2.5px solid var(--line);border-radius:16px;padding:7px 3px 5px;text-align:center;
+    transition:transform .08s,border-color .1s,background .1s;}
+  .shape-opt:active{transform:translateY(2px);}
+  .shape-opt.sel{border-color:var(--accent);background:#fff1e3;box-shadow:0 0 0 3px rgba(255,145,77,.25);}
+  .shape-opt svg{width:40px;height:40px;display:block;margin:0 auto;}
+  .shape-opt .sn{font-size:9.5px;font-weight:900;color:#7a5a38;margin-top:2px;}
+  .shape-opt .st{font-size:8px;font-weight:700;color:#b29a78;}
+  .colorchip{display:flex;align-items:center;gap:10px;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:4px;}
+  .colorchip .dot{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.15);flex:0 0 auto;}
+  .colorchip .ct{font-weight:900;font-size:13px;}
+  .colorchip .cs{font-size:10.5px;font-weight:700;color:#9a7a55;}
+  .disclaimer{font-size:10.5px;font-weight:700;color:#a98c66;line-height:1.7;background:#fff6e4;border:1.5px solid #ecd9b4;
+    border-radius:12px;padding:9px 12px;margin:14px 0 4px;}
+
+  /* ===== LOG RESULT ===== */
+  #screen-log-result .scroll{padding:6px 18px calc(env(safe-area-inset-bottom,0) + 18px);}
+  .res-poop{text-align:center;margin:6px 0 2px;}
+  .res-type{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(22px,6vw,30px);text-align:center;}
+  .res-sub{text-align:center;font-weight:700;font-size:13px;color:#6b4a2c;margin-top:4px;}
+  .hint-card{background:var(--paper);border:2.5px solid var(--line);border-radius:18px;padding:14px 16px;margin-top:14px;
+    box-shadow:0 4px 0 #ecdcc0;}
+  .hint-card h3{font-size:14px;color:#5b3a1e;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+  .hint-card ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .hint-card li{font-weight:700;font-size:13px;color:#5b3a1e;line-height:1.55;padding-left:22px;position:relative;}
+  .hint-card li::before{content:"💩";position:absolute;left:0;top:0;font-size:13px;}
+  .hint-card li.warn{color:#c0492c;}
+  .hint-card li.warn::before{content:"⚠️";}
+  .reading{display:flex;gap:10px;margin-top:14px;}
+  .reading .rc{flex:1;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center;}
+  .reading .rc .rl{font-size:10px;font-weight:900;color:#9a7a55;}
+  .reading .rc .rv{font-family:'Mochiy Pop One',sans-serif;font-size:14px;color:#a4652f;margin-top:3px;}
+
+  /* ===== HISTORY ===== */
+  #screen-log-history .scroll{padding:6px 16px calc(env(safe-area-inset-bottom,0) + 18px);}
+  .trend{background:linear-gradient(135deg,#fff3df,#ffe7c2);border:2.5px solid var(--line);border-radius:18px;padding:14px 16px;
+    box-shadow:0 4px 0 #ecdcc0;margin-bottom:14px;}
+  .trend .th{font-family:'Mochiy Pop One',sans-serif;font-size:15px;color:#5b3a1e;margin-bottom:8px;}
+  .trend .tmsg{font-weight:700;font-size:13px;color:#6b4a2c;line-height:1.7;}
+  .trend .bars{display:flex;gap:5px;margin-top:11px;align-items:flex-end;height:46px;}
+  .trend .bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .trend .bars .b .bar{width:70%;border-radius:5px 5px 0 0;min-height:4px;}
+  .trend .bars .b .bd{font-size:8px;font-weight:900;color:#b29a78;}
+  .log-row{display:flex;align-items:center;gap:12px;background:var(--paper);border:2px solid var(--line);border-radius:16px;
+    padding:10px;margin-bottom:9px;}
+  .log-row img{width:54px;height:54px;border-radius:12px;object-fit:cover;flex:0 0 auto;background:#eee;}
+  .log-row .li{flex:1;min-width:0;}
+  .log-row .ld{font-weight:900;font-size:13px;color:#5b3a1e;}
+  .log-row .lt{font-size:11.5px;font-weight:700;color:#9a7a55;margin-top:2px;}
+  .log-row .badge{flex:0 0 auto;font-weight:900;font-size:11px;border-radius:999px;padding:4px 10px;}
+  .badge.good{background:#e4f5d6;color:#4f8f2e;} .badge.ok{background:#fff0cf;color:#b58a1e;}
+  .badge.hard{background:#efe2cf;color:#946a2f;} .badge.loose{background:#dceef7;color:#3f7fa0;}
+  .empty{text-align:center;color:#b29a78;font-weight:900;font-size:14px;padding:50px 20px;line-height:1.8;}
+  .del{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:none;background:#f0d9bd;color:#7a5a38;font-weight:900;cursor:pointer;}
+
+  /* ===== GAME ===== */
+  .meal-tag{display:flex;align-items:center;gap:9px;flex:1;}
+  .meal-tag .icon{font-size:24px;}
+  .meal-tag .t1{font-family:'Mochiy Pop One',sans-serif;font-size:16px;line-height:1;}
   .meal-tag .t2{font-size:11px;font-weight:700;color:#9a7a55;margin-top:3px;}
-  .dots{display:flex;gap:5px;margin-top:5px;}
-  .dots i{width:8px;height:8px;border-radius:50%;background:#e3cfac;}
-  .dots i.done{background:var(--good);}
-  .dots i.now{background:var(--accent);transform:scale(1.3);}
-  .iconbtn{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);background:rgba(255,255,255,.8);
-    font-size:17px;cursor:pointer;box-shadow:0 3px 0 rgba(91,58,30,.28);}
-
-  /* belly scene */
-  .scene{flex:0 0 auto;position:relative;display:flex;align-items:center;justify-content:center;padding:4px 0 0;}
-  .scene svg{width:min(64%,250px);height:auto;display:block;}
-  .gain-pop{position:absolute;font-weight:900;font-size:15px;pointer-events:none;white-space:nowrap;
-    text-shadow:0 1px 2px rgba(255,255,255,.8);}
-  @keyframes floatup{0%{opacity:0;transform:translateY(6px) scale(.8);}20%{opacity:1;transform:translateY(0) scale(1);}
-    100%{opacity:0;transform:translateY(-46px) scale(1);}}
-  .grow-comment{text-align:center;font-weight:900;font-size:13px;color:#a4652f;min-height:18px;margin-top:-4px;}
-
-  /* meters */
-  .meters{flex:0 0 auto;padding:6px 16px 4px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 10px;}
-  .meter{display:flex;flex-direction:column;gap:3px;}
-  .meter .ml{display:flex;justify-content:space-between;font-size:10.5px;font-weight:900;color:#7a5a38;}
-  .meter .bar{height:8px;border-radius:99px;background:#ecdcc0;overflow:hidden;}
-  .meter .fill{height:100%;width:0%;border-radius:99px;transition:width .4s cubic-bezier(.2,1,.3,1);}
+  .dots{display:flex;gap:4px;margin-top:5px;}
+  .dots i{width:7px;height:7px;border-radius:50%;background:#e3cfac;}
+  .dots i.done{background:var(--good);}.dots i.now{background:var(--accent);transform:scale(1.3);}
+  .scene{flex:0 0 auto;position:relative;display:flex;align-items:center;justify-content:center;padding:2px 0 0;}
+  .scene svg{width:min(56%,210px);height:auto;display:block;}
+  .gain-pop{position:absolute;font-weight:900;font-size:15px;pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px rgba(255,255,255,.8);}
+  @keyframes floatup{0%{opacity:0;transform:translateY(6px) scale(.8);}20%{opacity:1;transform:none;}100%{opacity:0;transform:translateY(-44px);}}
+  .grow-comment{text-align:center;font-weight:900;font-size:13px;color:#a4652f;min-height:18px;}
+  .meters{flex:0 0 auto;padding:4px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px 10px;}
+  .meter .ml{font-size:10px;font-weight:900;color:#7a5a38;}
+  .meter .bar{height:7px;border-radius:99px;background:#ecdcc0;overflow:hidden;margin-top:2px;}
+  .meter .fill{height:100%;width:0;border-radius:99px;transition:width .4s;}
   .meter.good .fill{background:linear-gradient(90deg,#9ad36f,#6bb84a);}
   .meter.warn .fill{background:linear-gradient(90deg,#ffc06b,#ff7a4d);}
-
-  /* menu */
-  .menu-wrap{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;
-    background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.55));
-    border-top-left-radius:26px;border-top-right-radius:26px;margin-top:4px;
-    box-shadow:0 -6px 20px rgba(91,58,30,.08);}
-  .menu-head{text-align:center;font-family:'Mochiy Pop One',sans-serif;font-size:15px;color:#5b3a1e;padding:12px 0 2px;}
+  .menu-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.5));border-radius:24px 24px 0 0;margin-top:4px;
+    padding-bottom:calc(env(safe-area-inset-bottom,0) + 8px);}
+  .menu-head{text-align:center;font-family:'Mochiy Pop One',sans-serif;font-size:15px;padding:11px 0 2px;}
   .menu-head span{font-size:11px;font-weight:700;color:#9a7a55;font-family:'Zen Maru Gothic',sans-serif;}
-  .menu{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px calc(env(safe-area-inset-bottom,0px) + 16px);}
-  .food{
-    cursor:pointer;background:var(--paper);border:2.5px solid #e6d4b3;border-radius:18px;
-    padding:11px 8px 9px;text-align:center;position:relative;transition:transform .1s, box-shadow .1s, border-color .1s;
-    box-shadow:0 4px 0 #e3cfac;
-  }
-  .food:active{transform:translateY(3px);box-shadow:0 1px 0 #e3cfac;}
-  .food .emo{font-size:34px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.12));}
-  .food .nm{font-weight:900;font-size:13px;margin-top:5px;color:#5b3a1e;}
-  .food .tags{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;margin-top:6px;min-height:16px;}
-  .tg{font-size:9.5px;font-weight:900;padding:1px 6px;border-radius:99px;line-height:1.5;}
-  .tg.g{background:#e4f5d6;color:#4f8f2e;}
-  .tg.w{background:#ffe2d3;color:#d2622f;}
+  .photo-mini{display:flex;justify-content:center;padding:6px 16px 0;}
+  .photo-mini .pbtn{display:flex;align-items:center;gap:7px;background:#fff;border:2px solid var(--line);border-radius:999px;
+    padding:7px 16px;font-weight:900;font-size:13px;color:#7a5a38;cursor:pointer;box-shadow:0 3px 0 #e3cfac;}
+  .photo-mini .pbtn.has{border-color:var(--good);color:#4f8f2e;}
+  .chipgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 16px;}
+  .fchip{cursor:pointer;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:9px 4px 7px;text-align:center;
+    box-shadow:0 3px 0 #e3cfac;transition:transform .08s;}
+  .fchip:active{transform:translateY(2px);box-shadow:0 1px 0 #e3cfac;}
+  .fchip .e{font-size:26px;}.fchip .n{font-size:11px;font-weight:900;color:#5b3a1e;margin-top:3px;}
+  .fchip .tg{font-size:8.5px;font-weight:900;margin-top:3px;}
+  .fchip .tg.g{color:#4f8f2e;}.fchip .tg.w{color:#d2622f;}
+  .plate{padding:4px 16px;}
+  .plate .pl{font-size:11px;font-weight:900;color:#7a5a38;text-align:center;margin-bottom:6px;}
+  .plate-items{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:20px;}
+  .pitem{background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 8px 4px 11px;font-weight:900;font-size:12px;
+    display:flex;align-items:center;gap:6px;}
+  .pitem .x{width:18px;height:18px;border-radius:50%;background:#f0d9bd;color:#7a5a38;border:none;font-weight:900;cursor:pointer;font-size:12px;line-height:1;}
+  .plate-empty{font-size:11px;color:#b29a78;font-weight:700;}
+  .eatbtn{margin:10px 16px 4px;}
+  .eatbtn .btn{width:100%;padding:14px;border-radius:16px;font-size:18px;}
 
-  /* text-input meal UI */
-  .menu-wrap{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 6px);}
-  .input-area{padding:4px 16px 8px;}
-  .examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;justify-content:center;}
-  .chip{font-size:12px;font-weight:700;background:#fff;border:2px solid #e6d4b3;border-radius:999px;
-    padding:5px 11px;cursor:pointer;color:#7a5a38;box-shadow:0 2px 0 #e3cfac;}
-  .chip:active{transform:translateY(2px);box-shadow:none;}
-  .input-row{display:flex;gap:8px;}
-  #foodInput{flex:1;min-width:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#5b3a1e;
-    background:#fffaf0;border:2.5px solid #e6d4b3;border-radius:16px;padding:13px 14px;outline:none;
-    box-shadow:inset 0 2px 4px rgba(91,58,30,.08);-webkit-appearance:none;}
-  #foodInput:focus{border-color:var(--accent);}
-  #foodInput::placeholder{color:#c8b18f;font-weight:500;}
-  #foodInput:disabled{opacity:.6;}
-  .btn.add{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:15px;padding:0 18px;border-radius:16px;
-    flex:0 0 auto;box-shadow:0 4px 0 var(--ink);}
-  .btn.add:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);}
-  .meal-list{display:flex;flex-direction:column;gap:6px;margin-top:11px;}
-  .meal-item{display:flex;align-items:center;gap:9px;background:#fffaf0;border:2px solid #e6d4b3;border-radius:14px;
-    padding:8px 8px 8px 12px;animation:fadein .2s ease;}
-  .meal-item .mtxt{flex:1;min-width:0;font-weight:900;font-size:14px;color:#5b3a1e;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .meal-item .mcat{flex:0 0 auto;font-size:11px;color:#9a7a55;font-weight:700;}
-  .meal-item .rm{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:none;background:#f0d9bd;color:#7a5a38;
-    font-weight:900;cursor:pointer;font-size:15px;line-height:1;}
-  .meal-item .rm:active{background:#e3c49f;}
-  .meal-empty{font-size:12px;color:#b29a78;font-weight:700;text-align:center;margin-top:12px;}
-  .meal-sum{margin-top:11px;text-align:center;}
-  .meal-sum .sum-label{font-size:11px;font-weight:900;color:#7a5a38;letter-spacing:.1em;margin-bottom:6px;}
-  .meal-sum .scs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
-  .meal-sum .sc{font-size:12px;font-weight:900;border-radius:999px;padding:3px 10px;background:#eee;color:#777;}
-  .meal-sum .sc.g{background:#e4f5d6;color:#4f8f2e;}
-  .meal-sum .sc.w{background:#ffe2d3;color:#d2622f;}
-  .btn.eat{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;box-shadow:0 4px 0 var(--ink);}
-  .btn.eat.full{width:100%;margin-top:13px;padding:14px;border-radius:16px;font-size:18px;}
-  .btn.eat:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);}
-  .btn.eat:disabled{opacity:.45;filter:grayscale(.5);}
-
-  /* ============ DAY INTERIM ============ */
-  #screen-day,#screen-final{align-items:center;justify-content:center;text-align:center;padding:28px 22px;overflow-y:auto;}
-  .day-title{font-family:'Mochiy Pop One',sans-serif;font-size:22px;color:#a4652f;text-shadow:0 2px 0 #5b3a1e;}
-  .toilet{font-size:84px;margin:6px 0;animation:bob 2.2s ease-in-out infinite;}
-  .day-poop{margin:6px auto;}
-  .verdict{font-family:'Mochiy Pop One',sans-serif;font-size:20px;margin:8px 0 2px;}
-  .verdict-sub{font-weight:700;font-size:13px;color:#6b4a2c;line-height:1.8;max-width:300px;margin:0 auto;}
-
-  /* ============ FINAL ============ */
-  .final-poop{margin:2px auto 2px;position:relative;}
-  .crown{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:40px;
-    filter:drop-shadow(0 3px 4px rgba(180,130,0,.5));animation:bob 2.6s ease-in-out infinite;}
-  .rank-title{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(22px,7vw,30px);margin:4px 0 0;}
-  .bristol-badge{display:inline-block;font-weight:900;font-size:13px;background:#fff;border:2px solid var(--ink);
-    border-radius:999px;padding:5px 16px;margin:8px 0 4px;box-shadow:0 3px 0 rgba(91,58,30,.22);}
-  .total{font-family:'Mochiy Pop One',sans-serif;font-size:54px;line-height:1;color:#a4652f;text-shadow:0 3px 0 #5b3a1e;margin-top:6px;}
+  /* day / final */
+  #screen-day,#screen-final{align-items:center;justify-content:center;text-align:center;padding:24px 22px;overflow-y:auto;}
+  .day-title{font-family:'Mochiy Pop One',sans-serif;font-size:21px;color:#a4652f;text-shadow:0 2px 0 #5b3a1e;}
+  .toilet{font-size:74px;margin:4px 0;animation:bob 2.2s ease-in-out infinite;}
+  .verdict{font-family:'Mochiy Pop One',sans-serif;font-size:19px;margin:6px 0 2px;}
+  .verdict-sub{font-weight:700;font-size:13px;color:#6b4a2c;line-height:1.7;max-width:300px;margin:0 auto;}
+  .crown{font-size:38px;filter:drop-shadow(0 3px 4px rgba(180,130,0,.5));animation:bob 2.6s ease-in-out infinite;}
+  .rank-title{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(22px,7vw,30px);margin:2px 0 0;}
+  .bristol-badge{display:inline-block;font-weight:900;font-size:13px;background:#fff;border:2px solid var(--ink);border-radius:999px;
+    padding:5px 16px;margin:8px 0 4px;box-shadow:0 3px 0 rgba(91,58,30,.22);}
+  .total{font-family:'Mochiy Pop One',sans-serif;font-size:50px;line-height:1;color:#a4652f;text-shadow:0 3px 0 #5b3a1e;margin-top:4px;}
   .total small{font-size:.34em;color:#9a7a55;}
-  .bars{width:100%;max-width:330px;margin:14px auto 4px;display:flex;flex-direction:column;gap:8px;}
-  .scbar{display:flex;align-items:center;gap:8px;}
-  .scbar .lab{flex:0 0 56px;text-align:right;font-weight:900;font-size:12px;color:#7a5a38;}
-  .scbar .track{flex:1;height:13px;border-radius:99px;background:#ecdcc0;overflow:hidden;}
-  .scbar .v{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#ffd36b,#ff8a4d);
-    transition:width .8s cubic-bezier(.2,1,.3,1);}
+  .bars2{width:100%;max-width:330px;margin:12px auto 4px;display:flex;flex-direction:column;gap:7px;}
+  .scbar{display:flex;align-items:center;gap:8px;}.scbar .lab{flex:0 0 52px;text-align:right;font-weight:900;font-size:12px;color:#7a5a38;}
+  .scbar .track{flex:1;height:12px;border-radius:99px;background:#ecdcc0;overflow:hidden;}
+  .scbar .v{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#ffd36b,#ff8a4d);transition:width .8s;}
   .scbar .num{flex:0 0 30px;text-align:left;font-weight:900;font-size:12px;color:#a4652f;}
-
-  /* ranking */
-  .rank-box{width:100%;max-width:340px;margin:16px auto 0;background:#fff;border:3px solid var(--ink);
-    border-radius:20px;padding:14px;box-shadow:0 6px 0 rgba(91,58,30,.3);}
-  .world{font-family:'Mochiy Pop One',sans-serif;font-size:17px;color:#5b3a1e;line-height:1.4;}
-  .world b{color:#d2622f;font-size:1.3em;}
+  .rank-box{width:100%;max-width:340px;margin:14px auto 0;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:14px;box-shadow:0 6px 0 rgba(91,58,30,.3);}
+  .world{font-family:'Mochiy Pop One',sans-serif;font-size:16px;line-height:1.4;}.world b{color:#d2622f;font-size:1.3em;}
   .world .pct{font-size:12px;font-weight:700;color:#9a7a55;font-family:'Zen Maru Gothic',sans-serif;}
-  .lb{margin-top:12px;display:flex;flex-direction:column;gap:4px;}
-  .lb .row{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;padding:5px 9px;border-radius:10px;background:#fbf2dd;}
-  .lb .row .rk{flex:0 0 30px;font-weight:900;color:#a87900;}
-  .lb .row .nm{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .lb .row .sc{font-weight:900;color:#a4652f;}
-  .lb .row.me{background:linear-gradient(90deg,#fff0c2,#ffe39a);border:2px solid #e8c14a;}
-  .lb .ellip{text-align:center;color:#c2a888;font-weight:900;letter-spacing:2px;}
-  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px;padding-bottom:10px;}
-
-  .spark{position:absolute;pointer-events:none;font-size:18px;animation:sparkle 1.6s ease-in-out infinite;}
-  @keyframes sparkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:1;transform:scale(1.1);}}
+  .lb{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
+  .lb .row{display:flex;gap:8px;font-weight:700;font-size:13px;padding:5px 9px;border-radius:10px;background:#fbf2dd;}
+  .lb .row .rk{flex:0 0 30px;font-weight:900;color:#a87900;}.lb .row .nm{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb .row .sc{font-weight:900;color:#a4652f;}.lb .row.me{background:linear-gradient(90deg,#fff0c2,#ffe39a);border:2px solid #e8c14a;}
+  .lb .ellip{text-align:center;color:#c2a888;font-weight:900;}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px;}
   .confetti{position:fixed;top:-20px;font-size:20px;animation:fall linear infinite;z-index:50;pointer-events:none;}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
-
-  .eat-flash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 60%);
-    opacity:0;pointer-events:none;}
-  .eat-flash.go{animation:flash .4s ease;}
-  @keyframes flash{0%{opacity:0;}40%{opacity:.9;}100%{opacity:0;}}
+  .eat-flash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 60%);opacity:0;pointer-events:none;}
+  .eat-flash.go{animation:flash .4s ease;}@keyframes flash{0%{opacity:0;}40%{opacity:.9;}100%{opacity:0;}}
+  .spark{position:absolute;pointer-events:none;font-size:18px;animation:sparkle 1.6s ease-in-out infinite;}
+  @keyframes sparkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:1;transform:scale(1.1);}}
+  .mute{position:fixed;bottom:12px;right:12px;z-index:30;width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);
+    background:rgba(255,255,255,.85);font-size:17px;cursor:pointer;box-shadow:0 3px 0 rgba(91,58,30,.3);}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- TITLE -->
-  <section id="screen-title" class="screen active">
-    <div class="logo">うんこ道<span class="sub">〜 めざせ 世界一の 黄金便 〜</span></div>
-    <div class="title-poop">💩</div>
-    <div class="pitch">
-      1日3食、食べるものはキミ次第。<br>
-      腸の中で <b>うんこを育てて</b>、<br>
-      その<b>美しさ</b>で <b>世界ランキング</b>に挑戦！<br>
-      めざすは つるんと輝く <b>黄金バナナ便</b>✨
+  <!-- HOME -->
+  <section id="screen-home" class="screen active">
+    <div class="home-hd">
+      <div class="logo">うんログ<span class="sub">〜 まいにちの 腸活ダイアリー 〜</span></div>
+      <div class="home-poop">💩</div>
     </div>
-    <div class="best-badge" id="bestBadge" style="display:none"></div>
-    <button class="btn big" id="startBtn">いただきます！</button>
-    <button class="btn sm ghost" id="howBtn" style="margin-top:14px">あそびかた</button>
+    <div class="scroll" style="width:100%">
+      <div class="home-body">
+        <div class="streak" id="streak">きょうのうんこを記録してみよう！</div>
+        <div class="home-card hero" id="goRec">
+          <div class="ic">📷</div>
+          <div class="tx"><div class="tt">うんこを記録<span class="tag-main">メイン</span></div>
+            <div class="ds">写真を撮ると、色を解析して状態を分類。健康のヒントも教えてくれる</div></div>
+          <div class="arr">›</div>
+        </div>
+        <div class="home-card" id="goHist">
+          <div class="ic">📖</div>
+          <div class="tx"><div class="tt">きろくを見る</div>
+            <div class="ds">これまでのうんログと、最近の傾向をチェック</div></div>
+          <div class="arr">›</div>
+        </div>
+        <div class="home-card" id="goGame">
+          <div class="ic">🎮</div>
+          <div class="tx"><div class="tt">育成ゲーム</div>
+            <div class="ds">3日間の食事でうんこを育てて世界ランキングに挑戦</div></div>
+          <div class="arr">›</div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- PLAY -->
+  <!-- LOG RECORD -->
+  <section id="screen-log-rec" class="screen">
+    <div class="top"><button class="back" data-go="home">‹</button><h2>うんこを記録</h2><div class="sp"></div></div>
+    <div class="scroll">
+      <div class="sect">
+        <label class="photo-box" id="photoBox" for="poopFile">
+          <div class="ph-ic">📷</div>
+          <div class="ph-tx">うんこの写真を撮る／選ぶ<br><span style="font-size:11px;opacity:.8">タップしてカメラを起動</span></div>
+        </label>
+        <input id="poopFile" type="file" accept="image/*" capture="environment" style="display:none">
+
+        <div class="lbl">🎨 写真から読み取った色</div>
+        <div class="colorchip" id="colorChip"><div class="dot" style="background:#cdbfa6"></div>
+          <div><div class="ct" id="colorName">写真を撮ると自動で解析します</div><div class="cs" id="colorDesc">色は腸内環境のヒントになります</div></div></div>
+
+        <div class="lbl">📏 形はどれに近い？<span style="font-size:10px;font-weight:700;color:#b29a78">（タップで選択）</span></div>
+        <div class="shape-grid" id="shapeGrid"></div>
+
+        <div class="disclaimer">※ これは一般的な健康情報・統計的な傾向にもとづく参考表示です。医療診断ではありません。気になる症状が続くときは医療機関にご相談ください。</div>
+      </div>
+    </div>
+    <div class="eatbtn"><button class="btn" id="recBtn" disabled>この状態を記録する 🚽</button></div>
+  </section>
+
+  <!-- LOG RESULT -->
+  <section id="screen-log-result" class="screen">
+    <div class="top"><button class="back" data-go="home">‹</button><h2>診断けっか</h2><div class="sp"></div></div>
+    <div class="scroll">
+      <div class="res-poop" id="resPoop"></div>
+      <div class="res-type" id="resType"></div>
+      <div class="res-sub" id="resSub"></div>
+      <div class="reading">
+        <div class="rc"><div class="rl">かたさ</div><div class="rv" id="rdShape">-</div></div>
+        <div class="rc"><div class="rl">いろ</div><div class="rv" id="rdColor">-</div></div>
+      </div>
+      <div class="hint-card"><h3>💡 体からのサイン（一般的な傾向）</h3><ul id="hintList"></ul></div>
+      <div class="disclaimer">※ 医療診断ではありません。あくまで一般的な健康情報にもとづく参考です。気になる症状や、黒い・赤い・白い便が続く場合は医療機関にご相談ください。</div>
+      <div class="btns" style="margin-bottom:20px">
+        <button class="btn sm" data-go="log-history">きろくを見る</button>
+        <button class="btn sm ghost" data-go="home">ホームへ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="screen-log-history" class="screen">
+    <div class="top"><button class="back" data-go="home">‹</button><h2>うんログ履歴</h2><div class="sp"></div></div>
+    <div class="scroll">
+      <div class="sect" id="histInner"></div>
+    </div>
+    <div class="eatbtn"><button class="btn" data-go="log-rec">＋ 新しく記録する</button></div>
+  </section>
+
+  <!-- GAME PLAY -->
   <section id="screen-play" class="screen">
-    <div class="topbar">
-      <div class="meal-tag">
-        <div class="icon" id="mealIcon">🌅</div>
-        <div>
-          <div class="t1" id="mealTitle">1日目・朝食</div>
-          <div class="t2" id="mealSub">何を食べる？</div>
-          <div class="dots" id="dots"></div>
-        </div>
-      </div>
-      <button class="iconbtn" id="muteBtn">🔊</button>
+    <div class="top" style="padding-bottom:4px">
+      <button class="back" data-go="home">‹</button>
+      <div class="meal-tag"><div class="icon" id="mealIcon">🌅</div>
+        <div><div class="t1" id="mealTitle">1日目・朝食</div><div class="t2" id="mealSub"></div><div class="dots" id="dots"></div></div></div>
     </div>
-
-    <div class="scene">
-      <div id="bellyHolder"></div>
-      <div class="eat-flash" id="eatFlash"></div>
-    </div>
+    <div class="scene"><div id="bellyHolder"></div><div class="eat-flash" id="eatFlash"></div></div>
     <div class="grow-comment" id="growComment">うんこの たね が できた</div>
-
     <div class="meters" id="meters"></div>
-
     <div class="menu-wrap">
-      <div class="menu-head" id="menuHead">朝食を入力 <span>食べたものを1品ずつ追加</span></div>
-      <div class="input-area" id="inputArea">
-        <div class="examples" id="examples"></div>
-        <div class="input-row">
-          <input id="foodInput" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="例：とりもも肉、サラダ、米…">
-          <button class="btn add" id="addBtn">＋追加</button>
-        </div>
-        <div class="meal-list" id="mealList"></div>
-        <div class="meal-sum" id="mealSum"></div>
-        <button class="btn eat full" id="eatBtn" disabled>この食事を食べる 🍽️</button>
-      </div>
+      <div class="menu-head" id="menuHead">食べたものをタップ <span>（写真もメモできるよ）</span></div>
+      <div class="photo-mini"><div class="pbtn" id="mealPhotoBtn">📷 ごはんの写真（任意）</div>
+        <input id="mealFile" type="file" accept="image/*" capture="environment" style="display:none"></div>
+      <div class="chipgrid" id="chipGrid"></div>
+      <div class="plate"><div class="pl">🍽 この食事の合計</div><div class="plate-items" id="plateItems"></div></div>
+      <div class="eatbtn"><button class="btn" id="eatBtn" disabled>この食事を食べる 🍽️</button></div>
     </div>
   </section>
 
-  <!-- DAY INTERIM -->
+  <!-- DAY -->
   <section id="screen-day" class="screen">
-    <div class="day-title" id="dayTitle">1日目 おわり</div>
+    <div class="day-title" id="dayTitle">1日目 おわり 🚽</div>
     <div class="toilet">🚽</div>
-    <div class="day-poop" id="dayPoop"></div>
+    <div id="dayPoop"></div>
     <div class="verdict" id="dayVerdict"></div>
     <div class="verdict-sub" id="dayVerdictSub"></div>
-    <button class="btn big" id="nextDayBtn">つぎの日へ</button>
+    <button class="btn sm" id="nextDayBtn" style="margin-top:18px">つぎの日へ</button>
   </section>
 
   <!-- FINAL -->
   <section id="screen-final" class="screen">
     <div class="day-title">🏁 3日間の せいか 🏁</div>
-    <div class="final-poop" id="finalPoop"></div>
-    <div class="rank-title" id="rankTitle">健康なバナナ便</div>
+    <div id="finalPoop" style="margin:2px auto"></div>
+    <div class="rank-title" id="rankTitle"></div>
     <div class="bristol-badge" id="bristolBadge"></div>
     <div class="total" id="totalScore">0<small>点</small></div>
-    <div class="bars" id="finalBars"></div>
-    <div class="rank-box">
-      <div class="world" id="worldRank"></div>
-      <div class="lb" id="leaderboard"></div>
-    </div>
-    <div class="btns">
-      <button class="btn sm" id="shareBtn">結果をシェア</button>
-      <button class="btn sm ghost" id="retryBtn">もう一度</button>
+    <div class="bars2" id="finalBars"></div>
+    <div class="rank-box"><div class="world" id="worldRank"></div><div class="lb" id="leaderboard"></div></div>
+    <div class="btns" style="margin-bottom:20px">
+      <button class="btn sm" id="retryBtn">もう一度</button>
+      <button class="btn sm ghost" data-go="home">ホームへ</button>
     </div>
   </section>
 
+  <button class="mute" id="muteBtn">🔊</button>
 </div>
 
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-const screens=['title','play','day','final'];
-function show(name){ screens.forEach(s=>$('screen-'+s).classList.toggle('active', s===name)); }
+const SCREENS=['home','log-rec','log-result','log-history','play','day','final'];
+function show(name){ SCREENS.forEach(s=>$('screen-'+s).classList.toggle('active',s===name)); window.scrollTo&&window.scrollTo(0,0); }
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>{ const g=el.dataset.go; ac();
+  if(g==='log-rec') openRecord(); else if(g==='log-history') openHistory(); else show(g); }));
 
 /* ---------- sound ---------- */
-let AC=null, muted=false;
-function ac(){ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
-function beep(f,dur=.1,type='sine',vol=.1,slide=0){
-  if(muted)return;
-  try{const a=ac(),o=a.createOscillator(),g=a.createGain();
-  o.type=type;o.frequency.setValueAtTime(f,a.currentTime);
-  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+slide),a.currentTime+dur);
-  g.gain.setValueAtTime(vol,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);
-  o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+dur+.02);}catch(e){}
-}
-const SND={
-  eat:()=>{beep(520,.07,'triangle',.12);setTimeout(()=>beep(700,.09,'triangle',.1),70);},
-  good:()=>{beep(660,.09,'sine',.12);setTimeout(()=>beep(990,.12,'sine',.1),80);},
-  bad:()=>beep(200,.22,'sawtooth',.1,-80),
-  day:()=>[523,659,784].forEach((f,i)=>setTimeout(()=>beep(f,.12,'triangle',.11),i*90)),
+let AC=null,muted=false;
+function ac(){ if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
+function beep(f,d=.1,t='sine',v=.1,sl=0){ if(muted)return; try{const a=ac(),o=a.createOscillator(),g=a.createGain();
+  o.type=t;o.frequency.setValueAtTime(f,a.currentTime); if(sl)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+sl),a.currentTime+d);
+  g.gain.setValueAtTime(v,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);
+  o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+d+.02);}catch(e){} }
+const SND={ tap:()=>beep(520,.06,'triangle',.09,120), good:()=>{beep(660,.09,'sine',.12);setTimeout(()=>beep(990,.12,'sine',.1),80);},
+  eat:()=>beep(170,.09,'square',.12,-60), day:()=>[523,659,784].forEach((f,i)=>setTimeout(()=>beep(f,.12,'triangle',.11),i*90)),
   win:()=>[523,659,784,1046,1318,1568].forEach((f,i)=>setTimeout(()=>beep(f,.18,'triangle',.12),i*110)),
-};
+  rec:()=>{beep(587,.1,'sine',.12);setTimeout(()=>beep(880,.14,'sine',.11),110);} };
 $('muteBtn').addEventListener('click',e=>{muted=!muted;e.target.textContent=muted?'🔇':'🔊';});
 
-/* ---------- food data ----------
-   stats: fiber 食物繊維 / water 水分 / prob 善玉菌 / fat 脂質 / sugar 糖分 / irrit 刺激
-   tags shown to player as hints */
-/* ====== 料理テキスト → 栄養（うんこ成分）推定エンジン ======
-   食材・調理法のキーワードから 6成分を加算して推定する。
-   英単語は語頭境界マッチ（"tea"が"steak"に誤反応しないように）。 */
-function R(cat,kw,s){ return {cat,kw,s}; }
-const FOOD_DB = [
-  // --- 食物繊維（野菜・根菜・きのこ・海藻・いも・豆・ナッツ・全粒）---
-  R('🥗 野菜',['サラダ','salad','レタス','lettuce','キャベツ','cabbage','ほうれん','spinach','小松菜','チンゲン','青菜','野菜','vegetable','veggie','ブロッコリー','broccoli','アスパラ','asparagus','セロリ','celery','ケール','kale','オクラ','なす','eggplant','ピーマン','パプリカ','pepper','ズッキーニ','zucchini'],{fiber:2,water:1}),
-  R('🥕 根菜',['ごぼう','れんこん','大根','radish','人参','にんじん','carrot','かぼちゃ','pumpkin','squash','たけのこ','bamboo','ビーツ','beet','かぶ','turnip'],{fiber:2}),
-  R('🍄 きのこ',['きのこ','茸','しいたけ','エリンギ','まいたけ','しめじ','えのき','mushroom','トリュフ','truffle'],{fiber:3}),
-  R('🌿 海藻',['海藻','わかめ','seaweed','のり','海苔','昆布','kombu','ひじき','もずく','めかぶ','寒天','agar'],{fiber:2,prob:1}),
-  R('🍠 さつまいも',['さつまいも','sweet potato','焼き芋','やきいも','スイートポテト','yam'],{fiber:3,sugar:1}),
-  R('🥔 いも',['じゃがいも','potato','マッシュポテト','里芋','長芋','タロ','taro'],{fiber:1,water:1}),
-  R('🌽 とうもろこし',['とうもろこし','コーン','corn','メイズ','maize'],{fiber:2,sugar:1}),
-  R('🥑 アボカド',['アボカド','avocado','ワカモレ','guacamole'],{fiber:2,fat:1}),
-  R('🫘 豆類',['豆','bean','大豆','soy','レンズ','lentil','ひよこ豆','chickpea','フムス','hummus','枝豆','edamame','黒豆','インゲン','ファラフェル','falafel','ダル','dal','あずき','red bean'],{fiber:2,prob:0}),
-  R('🥜 ナッツ・種',['ナッツ','nut','アーモンド','almond','くるみ','walnut','カシュー','cashew','ピスタチオ','ごま','sesame','チア','chia','ピーナッツ','peanut'],{fiber:2,fat:1}),
-  R('🌾 全粒穀物',['玄米','brown rice','全粒','whole grain','オートミール','オーツ','oat','グラノーラ','granola','muesli','キヌア','quinoa','そば','soba','buckwheat','ライ麦','rye','もち麦','大麦','barley','ブルグル'],{fiber:2}),
-  // --- 発酵・善玉菌 ---
-  R('🦠 納豆',['納豆','natto'],{prob:3,fiber:2}),
-  R('🍶 味噌',['味噌','miso','みそ'],{prob:2,water:1}),
-  R('🥛 ヨーグルト',['ヨーグルト','yogurt','yoghurt','ケフィア','kefir','ラッシー','lassi'],{prob:3,water:1,sugar:1}),
-  R('🌶️ キムチ',['キムチ','kimchi'],{prob:2,fiber:1,irrit:1}),
-  R('🥒 発酵食品',['漬物','ぬか','糠','sauerkraut','ザワークラウト','ピクルス','pickle','テンペ','tempeh','コンブチャ','kombucha','甘酒','塩麹','メンマ'],{prob:2}),
-  R('🧀 チーズ',['チーズ','cheese','モッツァレラ','チェダー','パルメザン','カマンベール','feta','フェタ'],{prob:1,fat:2}),
-  // --- 水分 ---
-  R('💧 水分',['水','water','お茶','tea','緑茶','麦茶','ほうじ茶','スープ','soup','だし','broth','白湯','ハーブティー','ミネラルウォーター'],{water:3}),
-  R('🥛 乳',['牛乳','milk','ミルク','豆乳','ソイミルク','オーツミルク'],{water:1,fat:1}),
-  R('🍲 鍋・汁物',['鍋','hot pot','しゃぶ','すき焼き','sukiyaki','おでん','ポトフ','シチュー','stew','味噌汁','豚汁','クッパ','参鶏湯','サムゲタン','フォー','pho','ラクサ','laksa','ボルシチ'],{water:2,fiber:1,prob:1}),
-  R('🍉 水分果実',['すいか','スイカ','watermelon','メロン','melon','梨','pear','ぶどう','grape'],{water:2,sugar:1}),
-  // --- 果物 ---
-  R('🍌 バナナ',['バナナ','banana'],{fiber:2,sugar:1,water:1}),
-  R('🍎 果物',['りんご','apple','キウイ','kiwi','ベリー','berry','いちご','strawberry','ブルーベリー','プルーン','prune','いちじく','fig','ザクロ','pomegranate','柿','persimmon'],{fiber:2,sugar:1}),
-  R('🍊 柑橘・南国果実',['オレンジ','orange','みかん','レモン','lemon','グレープフルーツ','マンゴー','mango','パイナップル','pineapple','桃','peach','パパイヤ','papaya'],{water:1,sugar:1,fiber:1}),
-  // --- 主食（炭水化物・概ね中立）---
-  R('🍚 主食',['ごはん','ご飯','rice','白米','米','パン','bread','トースト','toast','ナン','naan','うどん','udon','パスタ','pasta','スパゲ','spaghetti','ヌードル','noodle','そうめん','ピラフ','pilaf','クスクス','couscous','トルティーヤ','tortilla','肉まん','bao','マカロニ','macaroni','バゲット','ベーグル','bagel'],{}),
-  R('🍳 卵',['卵','たまご','玉子','egg','オムレツ','omelet','omelette','目玉焼き','スクランブル','ゆで卵'],{fat:1}),
-  // --- 魚介（おおむね良好）---
-  R('🍣 寿司・刺身',['寿司','sushi','刺身','sashimi','海鮮','握り','ちらし','手巻き'],{fiber:1,prob:1}),
-  R('🐟 魚介',['魚','fish','鮭','サーモン','salmon','まぐろ','マグロ','tuna','さば','鯖','mackerel','いわし','sardine','焼き魚','海老','エビ','shrimp','prawn','蟹','カニ','crab','貝','牡蠣','oyster','ホタテ','scallop','たこ','octopus','いか','烏賊','squid','うなぎ','eel','あさり','ホッケ','ぶり','ブリ','たい','鯛'],{fat:1,prob:1}),
-  R('🍜 ラーメン',['ラーメン','ramen','中華そば','つけ麺','油そば','担々麺','タンメン'],{fat:2,sugar:1,water:1,irrit:1}),
-  R('🌮 メキシカン',['タコス','taco','ブリトー','burrito','ナチョス','nacho','ケサディ','quesadilla','エンチラーダ','ファヒータ'],{fiber:1,fat:2}),
-  // --- 肉・脂質 ---
-  R('🥩 赤身肉',['牛','beef','ステーキ','steak','ラム','lamb','ハンバーグ','焼肉','yakiniku','bbq','バーベキュー','プルコギ','bulgogi','ローストビーフ','すき焼き'],{fat:3}),
-  R('🐖 豚・加工肉',['豚','pork','ポーク','とんかつ','カツ','cutlet','ベーコン','bacon','ソーセージ','sausage','ハム','ham','スパム','spam','チャーシュー','サラミ','salami','生ハム','prosciutto'],{fat:3}),
-  R('🍗 鶏肉',['鶏','とり肉','とりにく','とりもも','鶏もも','もも肉','むね肉','ささみ','chicken','チキン','唐揚げ','からあげ','fried chicken','ナゲット','nugget','手羽','焼き鳥','やきとり','yakitori'],{fat:2,prob:0}),
-  R('🍔 ファストフード',['ハンバーガー','バーガー','burger','ホットドッグ','hot dog','ケバブ','kebab','ピザ','pizza','フライドチキン','ハンバーグ'],{fat:3,sugar:1}),
-  R('🍖 肉',['肉','meat','ジビエ','モツ','ホルモン','ひき肉','挽肉','鴨','馬肉','肉じゃが'],{fat:1}),
-  // --- 揚げ物・高脂質 ---
-  R('🍟 揚げ物',['揚げ','フライ','fried','天ぷら','tempura','フリット','コロッケ','croquette','春巻き','spring roll','ポテト','french fries','fries','チップス','chips','サモサ','samosa','カツ丼'],{fat:3}),
-  R('🍲 アジア飯',['パッタイ','pad thai','ナシゴレン','nasi','ビビンバ','bibimbap','キンパ','gimbap','チャプチェ','カオマンガイ','khao','ガパオ','チヂミ','ヤンニョム','ルーロー飯','海南鶏飯'],{fat:1,fiber:1,sugar:1}),
-  R('🧈 高脂質ソース',['バター','butter','マヨ','mayo','生クリーム','クリーム','cream','カルボナーラ','carbonara','グラタン','gratin','アルフレード','alfredo','ラード','lard','チーズソース'],{fat:3}),
-  // --- 甘味・糖分 ---
-  R('🍰 洋菓子・スイーツ',['ケーキ','cake','チョコ','chocolate','クッキー','cookie','ビスケット','ドーナツ','donut','doughnut','アイス','ice cream','ジェラート','gelato','プリン','pudding','パフェ','タルト','tart','マカロン','macaron','candy','飴','キャンディ','グミ','gummy','マフィン','muffin','パンケーキ','pancake','ワッフル','waffle','クレープ','crepe','チュロス','churro','ティラミス','tiramisu'],{sugar:3,fat:1}),
-  R('🍡 和菓子',['あんこ','餡','大福','まんじゅう','饅頭','どら焼き','団子','だんご','ようかん','羊羹','和菓子','mochi','もち','たい焼き','どらやき','カステラ'],{sugar:2,fiber:1}),
-  R('🍯 甘味料',['砂糖','sugar','はちみつ','蜂蜜','honey','ジャム','jam','シロップ','syrup','メープル','maple','練乳'],{sugar:2}),
-  R('🥤 甘い飲料',['ジュース','juice','コーラ','cola','コーク','coke','ソーダ','soda','サイダー','炭酸','スムージー','smoothie','シェイク','shake','フラペ','frappe','タピオカ','ミルクティー','bubble tea','エナドリ','エナジードリンク','energy drink','スポーツドリンク'],{sugar:3,water:1}),
-  // --- 刺激物・辛味・カフェイン・酒 ---
-  R('🌶️ 辛い料理',['激辛','辛い','spicy','唐辛子','chili','chilli','チリ','麻婆','mapo','タバスコ','tabasco','ハバネロ','トムヤム','tom yum','ラー油','わさび','wasabi','からし','mustard','ペペロンチーノ','タッカルビ','ガパオ','キムチチゲ','火鍋','sichuan','四川','ジャーク','jerk'],{irrit:3,fat:1}),
-  R('🍛 カレー・スパイス',['カレー','curry','ビリヤニ','biryani','マサラ','masala','タンドリー','tandoori','tikka','ガラムマサラ','スパイス'],{irrit:2,fat:1,fiber:1}),
-  R('☕ カフェイン',['コーヒー','coffee','espresso','エスプレッソ','カフェイン','caffeine','レッドブル','red bull','モンスター','カフェラテ','カプチーノ'],{irrit:2}),
-  R('🍺 アルコール',['お酒','sake','ビール','beer','ワイン','wine','ウイスキー','whisky','whiskey','焼酎','カクテル','cocktail','ハイボール','チューハイ','アルコール','alcohol','日本酒','テキーラ','ウォッカ','ラム酒','梅酒','サワー','レモンサワー'],{irrit:2,sugar:1}),
+/* ================= ブリストルスケール & 健康情報 ================= */
+const BRISTOL=[null,
+ {n:'コロコロ便',short:'コロコロ',cls:'hard',d:'ウサギの糞のような硬い塊。便秘タイプです。',
+  hints:[{t:'💧 水分が不足ぎみかも。こまめな水分補給を',w:0},{t:'🥦 食物繊維（野菜・海藻・果物）を増やすと◎',w:0},{t:'腸の通過に時間がかかっている傾向があります',w:0}]},
+ {n:'ゴツゴツ便',short:'ゴツゴツ',cls:'hard',d:'かたまりがつながった、ややかための便。',
+  hints:[{t:'💧 水分をもう少し意識してみましょう',w:0},{t:'🥦 食物繊維と適度な運動が効果的とされます',w:0}]},
+ {n:'ひび割れバナナ',short:'ひび割れ',cls:'ok',d:'表面にひびのあるバナナ状。ほぼ良好。',
+  hints:[{t:'👍 良い状態に近いです',w:0},{t:'あと少し水分があると理想的なバナナ便に',w:0}]},
+ {n:'なめらかバナナ便',short:'バナナ',cls:'good',d:'表面がなめらかなバナナ状。理想的な状態！',
+  hints:[{t:'🎉 とても良い状態です！',w:0},{t:'今の食生活・水分バランスをキープ✨',w:0}]},
+ {n:'やわらかバナナ',short:'やわらか',cls:'ok',d:'やわらかい半固形。健康範囲内。',
+  hints:[{t:'水分はしっかり摂れている様子',w:0},{t:'おおむね良好なサインです',w:0}]},
+ {n:'泥状便',short:'泥状',cls:'loose',d:'形が崩れたドロドロの軟便タイプ。',
+  hints:[{t:'😮‍💨 胃腸がお疲れ気味かもしれません',w:0},{t:'🌶️ 脂質・刺激物・冷え・食べ過ぎに注意',w:0},{t:'消化が追いついていない傾向があります',w:0}]},
+ {n:'水様便',short:'水様',cls:'loose',d:'固形物のない水のような下痢タイプ。',
+  hints:[{t:'😮‍💨 胃腸がかなりお疲れ気味かも',w:0},{t:'💧 脱水に注意してこまめな水分補給を',w:0},{t:'症状が続く場合は医療機関にご相談を',w:1}]},
 ];
-function kwHit(text,k){
-  k=k.toLowerCase();
-  if(/^[\x00-\x7f]+$/.test(k)){
-    const esc=k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    try{ return new RegExp('(^|[^a-z])'+esc).test(text); }catch(e){ return text.includes(k); }
-  }
-  return text.includes(k);
-}
-function analyzeFood(textRaw){
-  const text=(textRaw||'').toLowerCase().trim();
-  const s={fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0};
-  const cats=[]; let matched=false;
-  for(const r of FOOD_DB){
-    if(r.kw.some(k=>kwHit(text,k))){
-      matched=true;
-      for(const k in r.s) s[k]+=r.s[k];
-      if(!cats.includes(r.cat)) cats.push(r.cat);
-    }
-  }
-  if(!matched){ s.fiber=1;s.water=1;s.fat=1;s.sugar=1; cats.push('❓ 一般的な食事'); }
-  for(const k in s) s[k]=Math.round(Math.min(3.5,s[k])*10)/10; // per-meal cap
-  return {s,cats:cats.slice(0,5),unknown:!matched};
-}
-const EXAMPLES=['寿司','ビリヤニ','ステーキとサラダ','麻婆豆腐','納豆ごはん','ギリシャヨーグルト','こってりラーメン','タコス','キムチ鍋','チョコケーキ','焼き芋','フォー'];
-const SLOTS=[
-  {key:'morning',icon:'🌅',label:'朝食',sub:'今日の朝ごはんは？'},
-  {key:'noon',   icon:'☀️',label:'昼食',sub:'ランチタイム！'},
-  {key:'night',  icon:'🌙',label:'夕食',sub:'1日のしめは？'},
-];
-const STAT_INFO={
-  fiber:{n:'食物繊維',cls:'good'}, water:{n:'水分',cls:'good'}, prob:{n:'善玉菌',cls:'good'},
-  fat:{n:'脂質',cls:'warn'}, sugar:{n:'糖分',cls:'warn'}, irrit:{n:'刺激物',cls:'warn'},
-};
-
-/* ---------- game state ---------- */
-const TOTAL_DAYS=3;
-let G;
-function newGame(){
-  G={ day:0, slot:0, mealCount:0,
-      sum:{fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0} };
-}
-function avg(){ const m=Math.max(1,G.mealCount),a={};for(const k in G.sum)a[k]=G.sum[k]/m;return a; }
-
-/* ---------- result math ---------- */
-function computeResult(useCount){
-  const m=Math.max(1, useCount!=null?useCount:G.mealCount);
-  const a={};for(const k in G.sum)a[k]=G.sum[k]/m;
-  const dryness  = Math.max(0,1.6-a.water)*1.3 + Math.max(0,1.4-a.fiber)*1.0;
-  const looseness= a.fat*0.7 + a.sugar*0.55 + a.irrit*1.1 + Math.max(0,(a.water-2.6)-a.fiber*0.4)*0.8;
-  const net=looseness-dryness;
-  const bristol=Math.min(7,Math.max(1, 4+net*1.3));
-  const clamp=v=>Math.max(0,Math.min(100,v));
-  const shape=clamp(100-Math.abs(bristol-4)*24 - Math.max(0,1.2-a.fiber)*22);
-  const color=clamp(60+a.prob*16 - a.fat*10 - a.sugar*12 + a.fiber*4);
-  const luster=clamp(55+a.water*16 - Math.abs(bristol-4)*10 - a.fat*6);
-  const smell=clamp(70+a.prob*12 - a.fat*14 - a.sugar*10 - a.irrit*12);
-  const ease=clamp(70+a.fiber*8 + a.water*8 - Math.abs(bristol-4)*16 - a.irrit*8);
-  let total=shape*.25+color*.20+luster*.15+smell*.20+ease*.20;
-  total-=Math.max(0,(a.fat+a.sugar)-2)*6;     // 悪玉菌ペナルティ
-  total=Math.round(clamp(total));
-  return {a,bristol,btype:Math.round(bristol),
-          dims:{形:Math.round(shape),色:Math.round(color),ツヤ:Math.round(luster),香り:Math.round(smell),快便:Math.round(ease)},
-          total};
-}
-const BRISTOL=[
-  null,
-  {n:'コロコロ便',d:'カチカチの便秘…水分と繊維がぜんぜん足りないよ💦'},
-  {n:'ゴツゴツ便',d:'かたくて出にくい便秘ぎみ。野菜とお水をもっと！'},
-  {n:'ひび割れバナナ',d:'おしい！あと少し水分があればツルッといけた。'},
-  {n:'つるんバナナ便',d:'理想形！するっと快便、最高の腸内環境✨'},
-  {n:'やわらかバナナ',d:'やや柔らかめ。健康的だけどあと一歩。'},
-  {n:'どろどろ軟便',d:'脂質や刺激物が多すぎたかも…お腹ゆるゆる。'},
-  {n:'みずみず下痢便',d:'これは大惨事！刺激物と脂で腸が大暴れ🚽'},
-];
-function rankInfo(total,btype){
-  if(total>=90) return {t:'伝説の黄金便',c:'#f5c518',emoji:'👑',crown:true};
-  if(total>=80) return {t:'ピカピカ黄金便',c:'#e0a91a',emoji:'✨',crown:true};
-  if(total>=70) return {t:'健康なバナナ便',c:'#c8861f',emoji:'🍌',crown:false};
-  if(total>=55) return {t:'まあまあ普通便',c:'#b07a3a',emoji:'🙂',crown:false};
-  if(total>=40) return {t:'ちょい不調便',c:'#a06a3a',emoji:'😅',crown:false};
-  if(btype<=2)  return {t:'コロコロ侯爵',c:'#8a6a40',emoji:'🪨',crown:false};
-  if(btype>=6)  return {t:'ゆるゆる将軍',c:'#7d6a45',emoji:'💧',crown:false};
-  return {t:'うんこ修行中',c:'#7d6a45',emoji:'💀',crown:false};
+/* RGB→HSL */
+function rgb2hsl(r,g,b){ r/=255;g/=255;b/=255; const mx=Math.max(r,g,b),mn=Math.min(r,g,b); let h=0,s=0,l=(mx+mn)/2;
+  if(mx!==mn){const d=mx-mn; s=l>.5?d/(2-mx-mn):d/(mx+mn);
+    if(mx===r)h=(g-b)/d+(g<b?6:0); else if(mx===g)h=(b-r)/d+2; else h=(r-g)/d+4; h*=60;} return {h,s,l}; }
+function classifyColor(rgb){
+  const {h,s,l}=rgb2hsl(rgb.r,rgb.g,rgb.b);
+  if(l<0.16) return {key:'dark',label:'濃い茶〜黒っぽい',desc:'やや黒っぽい色です',
+    hints:[{t:'🥩 肉類・鉄分が多めの食事だったかも',w:0},{t:'消化に時間がかかっている傾向',w:0},{t:'タール状で真っ黒な便が続く場合は念のため受診を',w:1}]};
+  if(l>0.7 && s<0.28) return {key:'pale',label:'白っぽい・薄い色',desc:'色が薄めです',
+    hints:[{t:'脂質の消化がうまくいっていない可能性',w:0},{t:'白っぽい便が続く場合は医療機関にご相談を',w:1}]};
+  if(h>=55 && h<=170 && s>0.13) return {key:'green',label:'緑がかった色',desc:'グリーン寄りの色です',
+    hints:[{t:'🥬 葉物野菜が多い／消化が早いときに出やすい',w:0},{t:'一時的なものなら問題ないことが多いです',w:0}]};
+  if((h<14||h>344) && s>0.45 && l<0.45) return {key:'red',label:'赤みがかった色',desc:'赤みが見られます',
+    hints:[{t:'トマトやビーツなど赤い食材の影響のことも',w:0},{t:'表面に赤み（血）が続く場合は医療機関にご相談を',w:1}]};
+  if(h>=18 && h<=48) return {key:'healthy',label:'健康的な黄土〜茶色',desc:'理想的な色みです',
+    hints:[{t:'👍 良好な腸内環境のサイン！',w:0}]};
+  return {key:'normal',label:'ふつうの茶色',desc:'標準的な色みです',
+    hints:[{t:'おおむね良好な色です',w:0}]};
 }
 
-/* ---------- poop SVG ---------- */
-function palette(res){
-  const {a,btype,dims}=res;
-  if(a.fat+a.sugar>2.3) return {base:'#5d4226',dark:'#3c2a18',light:'#7a5a38'};      // junk dark
-  if(btype>=6)          return {base:'#9c7b46',dark:'#6f562f',light:'#bb9a63'};      // muddy
-  if(btype<=2)          return {base:'#7a5631',dark:'#543a20',light:'#9b7748'};      // dry dark
-  if(dims.色>=72 && dims.ツヤ>=70) return {base:'#c08a2e',dark:'#8f6418',light:'#ecc05a'}; // golden
-  return {base:'#9b6b3f',dark:'#6e4a28',light:'#bd8e57'};                            // normal
-}
-// kawaii swirl poop. opts: pal, mood(0 sad..2 happy), shine, crown, scale, shape
-function poopSVG(opts){
-  const p=opts.pal, mood=opts.mood==null?2:opts.mood, shine=opts.shine||0, sh=opts.shape||'banana';
-  const id='g'+Math.floor((opts.seed||1)*9999);
-  const eyeY=58, mouth = mood>=2 ? `M86 ${eyeY+14} Q100 ${eyeY+26} 114 ${eyeY+14}`
-            : mood===1 ? `M88 ${eyeY+18} L112 ${eyeY+18}`
-            : `M86 ${eyeY+22} Q100 ${eyeY+10} 114 ${eyeY+22}`;
+/* ---------- poop SVG (kawaii, parametric) ---------- */
+function poopSVG(o){
+  const p=o.pal,mood=o.mood==null?2:o.mood,sh=o.shape||'banana';
+  const eyeY=58, mouth = mood>=2?`M86 ${eyeY+14} Q100 ${eyeY+26} 114 ${eyeY+14}`:mood===1?`M88 ${eyeY+18} L112 ${eyeY+18}`:`M86 ${eyeY+22} Q100 ${eyeY+10} 114 ${eyeY+22}`;
   let body='';
-  if(sh==='pebbles'){
-    body=`
-      <ellipse cx="70" cy="150" rx="26" ry="24" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="128" cy="152" rx="24" ry="22" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="100" cy="118" rx="30" ry="27" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="100" cy="80" rx="34" ry="30" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>`;
-  } else if(sh==='mushy'){
-    body=`
-      <path d="M40 165 Q100 120 160 165 Q170 185 100 188 Q30 185 40 165Z" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="100" cy="118" rx="48" ry="38" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="100" cy="74" rx="36" ry="30" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="58" cy="178" rx="7" ry="5" fill="${p.light}" opacity=".7"/>
-      <ellipse cx="146" cy="176" rx="6" ry="4" fill="${p.light}" opacity=".7"/>`;
-  } else {
-    // banana / cracked / soft swirl (3 stacked)
-    body=`
-      <ellipse cx="100" cy="158" rx="60" ry="26" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="100" cy="120" rx="46" ry="22" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <ellipse cx="100" cy="86" rx="33" ry="18" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
-      <path d="M88 70 Q96 50 112 58 Q122 64 112 74" fill="${p.base}" stroke="${p.dark}" stroke-width="4" stroke-linejoin="round"/>`;
-    if(sh==='cracked'){
-      body+=`<path d="M78 150 l10 -10 M110 152 l8 -9 M128 124 l9 -7" stroke="${p.dark}" stroke-width="3" stroke-linecap="round" opacity=".5"/>`;
-    }
+  if(sh==='pebbles'){body=`<ellipse cx="70" cy="150" rx="26" ry="24" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="128" cy="152" rx="24" ry="22" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="100" cy="118" rx="30" ry="27" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="100" cy="80" rx="34" ry="30" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>`;
+  }else if(sh==='mushy'||sh==='water'){body=`<path d="M40 165 Q100 120 160 165 Q170 186 100 189 Q30 186 40 165Z" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="100" cy="118" rx="48" ry="38" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="100" cy="74" rx="36" ry="30" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="56" cy="180" rx="8" ry="5" fill="${p.light}" opacity=".7"/><ellipse cx="146" cy="178" rx="7" ry="4" fill="${p.light}" opacity=".7"/>`;
+    if(sh==='water')body+=`<ellipse cx="100" cy="150" rx="70" ry="14" fill="${p.light}" opacity=".4"/>`;
+  }else{body=`<ellipse cx="100" cy="158" rx="60" ry="26" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="100" cy="120" rx="46" ry="22" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <ellipse cx="100" cy="86" rx="33" ry="18" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+    <path d="M88 70 Q96 50 112 58 Q122 64 112 74" fill="${p.base}" stroke="${p.dark}" stroke-width="4" stroke-linejoin="round"/>`;
+    if(sh==='cracked')body+=`<path d="M78 150 l10 -9 M110 152 l8 -9 M128 124 l9 -7" stroke="${p.dark}" stroke-width="3" stroke-linecap="round" opacity=".5"/>`;
   }
-  // highlights
-  const hi = `
-      <ellipse cx="78" cy="${sh==='pebbles'?70:80}" rx="12" ry="7" fill="${p.light}" opacity=".55"/>
-      <ellipse cx="80" cy="${sh==='pebbles'?112:118}" rx="16" ry="8" fill="${p.light}" opacity=".45"/>`;
-  // face
-  const face=`
-      <ellipse cx="86" cy="${eyeY}" rx="7" ry="8.5" fill="#fff"/>
-      <ellipse cx="114" cy="${eyeY}" rx="7" ry="8.5" fill="#fff"/>
-      <circle cx="${87+(mood<1?-1:0)}" cy="${eyeY+1}" r="3.4" fill="#3a2412"/>
-      <circle cx="${115+(mood<1?-1:0)}" cy="${eyeY+1}" r="3.4" fill="#3a2412"/>
-      <circle cx="${85}" cy="${eyeY-2}" r="1.4" fill="#fff"/>
-      <circle cx="${113}" cy="${eyeY-2}" r="1.4" fill="#fff"/>
-      <path d="${mouth}" fill="none" stroke="#3a2412" stroke-width="3.4" stroke-linecap="round"/>
-      <ellipse cx="72" cy="${eyeY+9}" rx="6" ry="3.4" fill="#ff9a9a" opacity=".5"/>
-      <ellipse cx="128" cy="${eyeY+9}" rx="6" ry="3.4" fill="#ff9a9a" opacity=".5"/>`;
-  let extras='';
-  if(shine>=1){ extras+=`
-      <text x="156" y="56" font-size="22" class="spark" style="animation-delay:.1s">✨</text>
-      <text x="26" y="96" font-size="18" class="spark" style="animation-delay:.5s">✨</text>
-      <text x="150" y="140" font-size="16" class="spark" style="animation-delay:.9s">⭐</text>`; }
-  if(mood<1){ extras+=`<text x="138" y="64" font-size="20">💦</text>`; }
-  const crown = opts.crown ? `<text x="100" y="34" font-size="40" text-anchor="middle">👑</text>` : '';
-  return `<svg viewBox="0 0 200 200" width="${opts.w||200}" xmlns="http://www.w3.org/2000/svg">
-    ${body}${hi}${face}${extras}${crown}</svg>`;
+  const hi=`<ellipse cx="78" cy="${sh==='pebbles'?70:80}" rx="12" ry="7" fill="${p.light}" opacity=".5"/>`;
+  const face=`<ellipse cx="86" cy="${eyeY}" rx="7" ry="8.5" fill="#fff"/><ellipse cx="114" cy="${eyeY}" rx="7" ry="8.5" fill="#fff"/>
+    <circle cx="87" cy="${eyeY+1}" r="3.4" fill="#3a2412"/><circle cx="115" cy="${eyeY+1}" r="3.4" fill="#3a2412"/>
+    <circle cx="85" cy="${eyeY-2}" r="1.4" fill="#fff"/><circle cx="113" cy="${eyeY-2}" r="1.4" fill="#fff"/>
+    <path d="${mouth}" fill="none" stroke="#3a2412" stroke-width="3.4" stroke-linecap="round"/>
+    <ellipse cx="72" cy="${eyeY+9}" rx="6" ry="3.4" fill="#ff9a9a" opacity=".5"/><ellipse cx="128" cy="${eyeY+9}" rx="6" ry="3.4" fill="#ff9a9a" opacity=".5"/>`;
+  let ex=''; if(o.shine>=1)ex+=`<text x="156" y="56" font-size="22" class="spark">✨</text><text x="26" y="96" font-size="18" class="spark" style="animation-delay:.5s">✨</text>`;
+  if(mood<1)ex+=`<text x="138" y="64" font-size="20">💦</text>`;
+  const crown=o.crown?`<text x="100" y="34" font-size="40" text-anchor="middle">👑</text>`:'';
+  return `<svg viewBox="0 0 200 200" width="${o.w||200}" xmlns="http://www.w3.org/2000/svg">${body}${hi}${face}${ex}${crown}</svg>`;
+}
+function shapeOf(bt){return bt<=2?'pebbles':bt===3?'cracked':bt===4?'banana':bt===5?'soft':bt===6?'mushy':'water';}
+function logPalette(colorKey, bt){
+  if(colorKey==='dark') return {base:'#5d4226',dark:'#3c2a18',light:'#7a5a38'};
+  if(colorKey==='pale') return {base:'#cdb88f',dark:'#a8916a',light:'#e6d6b8'};
+  if(colorKey==='green') return {base:'#7d8a3c',dark:'#586326',light:'#a3b05a'};
+  if(colorKey==='red') return {base:'#9b5b40',dark:'#6e3a28',light:'#bd7a57'};
+  if(colorKey==='healthy') return {base:'#c08a2e',dark:'#8f6418',light:'#ecc05a'};
+  return {base:'#9b6b3f',dark:'#6e4a28',light:'#bd8e57'};
 }
 
-/* belly scene with intestine + growing poop */
-function bellySVG(growth, res){
-  // growth 0..1 ; res for tint
-  const sc=0.34+growth*0.62;
-  const pal = res?palette(res):{base:'#b98a55',dark:'#8a6238',light:'#d3aa70'};
-  const mood = res? (res.total>=70?2:res.total>=45?1:0) : 2;
-  const poop = poopSVG({pal,mood,shine:0,shape:'banana',w:150*sc});
-  return `
-  <svg viewBox="0 0 300 250" width="100%" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="belly" cx="50%" cy="45%" r="60%">
-        <stop offset="0%" stop-color="#ffe6d2"/><stop offset="100%" stop-color="#ffcdb0"/>
-      </radialGradient>
-    </defs>
-    <ellipse cx="150" cy="128" rx="135" ry="116" fill="url(#belly)" stroke="#f0b48f" stroke-width="3"/>
-    <!-- coiled intestine -->
-    <g fill="none" stroke="var(--intestine)" stroke-width="20" stroke-linecap="round" opacity=".9">
-      <path d="M60 60 Q150 30 240 60 Q270 110 220 130 Q150 150 90 130 Q45 150 80 195 Q150 225 230 195"/>
-    </g>
-    <g fill="none" stroke="var(--intestine-d)" stroke-width="20" stroke-linecap="round" opacity=".18">
-      <path d="M60 60 Q150 30 240 60 Q270 110 220 130 Q150 150 90 130 Q45 150 80 195 Q150 225 230 195"/>
-    </g>
-    <!-- the poop, nestled lower center -->
-    <g transform="translate(${150-75*sc}, ${118-95*sc})">${poop}</g>
-  </svg>`;
-}
+/* ================= うんログ（メイン機能） ================= */
+const LS_LOG='unlog_v1';
+let recState={photo:null, color:null, shape:0};
 
-/* ---------- rendering ---------- */
-function renderMeters(){
-  const a=avg(), order=['fiber','water','prob','fat','sugar','irrit'];
-  $('meters').innerHTML=order.map(k=>{
-    const info=STAT_INFO[k];
-    const pct=Math.min(100, (a[k]/2.4)*100);
-    return `<div class="meter ${info.cls}"><div class="ml"><span>${info.n}</span></div>
-      <div class="bar"><div class="fill" style="width:${pct}%"></div></div></div>`;
+function loadLogs(){ try{return JSON.parse(localStorage.getItem(LS_LOG)||'[]');}catch(e){return [];} }
+function saveLogs(a){ try{localStorage.setItem(LS_LOG,JSON.stringify(a.slice(0,60)));}catch(e){} }
+
+function openRecord(){
+  recState={photo:null,color:null,shape:0};
+  $('photoBox').className='photo-box';
+  $('photoBox').innerHTML='<div class="ph-ic">📷</div><div class="ph-tx">うんこの写真を撮る／選ぶ<br><span style="font-size:11px;opacity:.8">タップしてカメラを起動</span></div>';
+  $('poopFile').value='';
+  $('colorChip').querySelector('.dot').style.background='#cdbfa6';
+  $('colorName').textContent='写真を撮ると自動で解析します'; $('colorDesc').textContent='色は腸内環境のヒントになります';
+  renderShapeGrid();
+  $('recBtn').disabled=true;
+  show('log-rec');
+}
+function renderShapeGrid(){
+  $('shapeGrid').innerHTML=[1,2,3,4,5,6,7].map(bt=>{
+    const b=BRISTOL[bt], pal=logPalette('normal',bt);
+    return `<div class="shape-opt${recState.shape===bt?' sel':''}" data-bt="${bt}">
+      ${poopSVG({pal,mood:2,shape:shapeOf(bt),w:40})}
+      <div class="sn">${b.short}</div><div class="st">型${bt}</div></div>`;
   }).join('');
+  $('shapeGrid').querySelectorAll('.shape-opt').forEach(el=>el.addEventListener('click',()=>{
+    recState.shape=+el.dataset.bt; SND.tap(); renderShapeGrid(); updateRecBtn();
+  }));
 }
-let currentMeal=[];  // [{text, res}] 1食ぶんの献立
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function renderMealInput(){
-  const slot=SLOTS[G.slot];
-  $('mealIcon').textContent=slot.icon;
-  $('mealTitle').textContent=`${G.day+1}日目・${slot.label}`;
-  $('mealSub').textContent=slot.sub;
-  $('dots').innerHTML=Array.from({length:TOTAL_DAYS*3},(_,i)=>{
-    const cls=i<G.mealCount?'done':(i===G.mealCount?'now':'');
-    return `<i class="${cls}"></i>`;
-  }).join('');
-  $('menuHead').innerHTML=`${slot.label}を入力 <span>食べたものを1品ずつ追加</span>`;
-  const inp=$('foodInput'); inp.value=''; inp.disabled=false;
-  $('examples').innerHTML=EXAMPLES.map(e=>`<span class="chip">${e}</span>`).join('');
-  $('examples').querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{inp.value=c.textContent;inp.focus();}));
-  currentMeal=[];
-  renderMealList();
-  updateBelly();
-}
-function combineMeal(){
-  const s={fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0};
-  currentMeal.forEach(it=>{ for(const k in it.res.s) s[k]+=it.res.s[k]; });
-  for(const k in s) s[k]=Math.round(Math.min(4,s[k])*10)/10; // 1食ぶんの上限
-  return s;
-}
-function renderMealList(){
-  const list=$('mealList');
-  if(currentMeal.length===0){
-    list.innerHTML='<div class="meal-empty">まだ何も追加されていません</div>';
-    $('mealSum').innerHTML=''; $('eatBtn').disabled=true; return;
-  }
-  list.innerHTML=currentMeal.map((it,i)=>
-    `<div class="meal-item"><span class="mtxt">${escapeHtml(it.text)}</span>`+
-    `<span class="mcat">${it.res.cats[0]||''}</span>`+
-    `<button class="rm" data-i="${i}" aria-label="削除">×</button></div>`).join('');
-  list.querySelectorAll('.rm').forEach(b=>b.addEventListener('click',()=>{currentMeal.splice(+b.dataset.i,1);renderMealList();}));
-  const tot=combineMeal();
-  const order=[['fiber','食物繊維'],['water','水分'],['prob','善玉菌'],['fat','脂質'],['sugar','糖分'],['irrit','刺激']];
-  const chips=order.filter(([k])=>tot[k]>0).map(([k,n])=>{
-    const good=(k==='fiber'||k==='water'||k==='prob');
-    const v=tot[k]%1?tot[k].toFixed(1):tot[k];
-    return `<span class="sc ${good?'g':'w'}">${n} +${v}</span>`;
-  }).join('');
-  $('mealSum').innerHTML=`<div class="sum-label">🍽 この食事の合計</div><div class="scs">${chips||'<span class="sc">影響ほぼなし</span>'}</div>`;
-  $('eatBtn').disabled=false;
-}
-function onAdd(){
-  if(busy)return;
-  const inp=$('foodInput'); const txt=inp.value.trim();
-  if(!txt){ inp.focus(); return; }
-  ac(); beep(520,.06,'triangle',.09,120);
-  currentMeal.push({text:txt, res:analyzeFood(txt)});
-  inp.value=''; inp.focus();
-  renderMealList();
-}
-function onEatMeal(){
-  if(busy||currentMeal.length===0)return;
-  const s=combineMeal(); currentMeal=[]; eatMeal(s);
-}
-function updateBelly(){
-  const growth=G.mealCount/(TOTAL_DAYS*3);
-  const res=G.mealCount>0?computeResult():null;
-  $('bellyHolder').innerHTML=bellySVG(growth,res);
-  if(G.mealCount===0) $('growComment').textContent='うんこの たね が できた';
-}
-function gainPop(text,color){
-  const holder=$('bellyHolder');
-  const sp=document.createElement('div');
-  sp.className='gain-pop'; sp.textContent=text; sp.style.color=color;
-  sp.style.left=(35+Math.random()*30)+'%'; sp.style.top=(20+Math.random()*20)+'%';
-  sp.style.animation='floatup 1.3s ease forwards';
-  $('bellyHolder').parentElement.appendChild(sp);
-  setTimeout(()=>sp.remove(),1300);
-}
+function updateRecBtn(){ $('recBtn').disabled = !(recState.photo && recState.shape>0); }
 
-let busy=false;
-function eatMeal(stats){
-  if(busy)return; busy=true;
-  ac(); SND.eat();
-  $('eatFlash').classList.remove('go'); void $('eatFlash').offsetWidth; $('eatFlash').classList.add('go');
-  // apply
-  for(const k in stats) G.sum[k]+=stats[k];
-  G.mealCount++;
-  // floating gains
-  const order=['fiber','water','prob','fat','sugar','irrit'];
-  let delay=0;
-  order.forEach(k=>{ if(stats[k]>0){ const info=STAT_INFO[k];
-    const v=stats[k]%1?stats[k].toFixed(1):stats[k];
-    setTimeout(()=>gainPop(`${info.n}+${v}`, info.cls==='good'?'#4f8f2e':'#d2622f'),delay); delay+=110; } });
-  renderMeters();
-  setTimeout(()=>{
-    updateBelly();
-    const res=computeResult();
-    $('growComment').textContent = res.total>=70?'いい感じに育ってる✨':res.total>=45?'まあまあ育ってきた':'うーん、お腹の調子が心配…';
-    // advance slot/day
-    G.slot++;
-    if(G.slot>=3){
-      G.slot=0;
-      setTimeout(()=>{ busy=false; dayInterim(); },420);
-    } else {
-      busy=false; renderMealInput();
-    }
-  },420);
-}
-
-function dayInterim(){
-  const res=computeResult();
-  const b=BRISTOL[res.btype];
-  $('dayTitle').textContent=`${G.day+1}日目 おわり 🚽`;
-  $('dayPoop').innerHTML=poopSVG({pal:palette(res),mood:res.total>=70?2:res.total>=45?1:0,
-      shine:res.total>=80?1:0, shape:shapeOf(res.btype), w:150, seed:G.day+1});
-  $('dayVerdict').textContent=`今朝のうんこ：${b.n}`;
-  $('dayVerdict').style.color = res.total>=70?'#4f8f2e':res.total>=45?'#c8861f':'#d2622f';
-  $('dayVerdictSub').textContent=b.d;
-  $('nextDayBtn').textContent = G.day+1>=TOTAL_DAYS ? '最終結果を見る' : 'つぎの日へ';
-  SND.day();
-  show('day');
-}
-function shapeOf(bt){ return bt<=2?'pebbles':bt===3?'cracked':bt===4?'banana':bt===5?'soft':'mushy'; }
-
-$('nextDayBtn').addEventListener('click',()=>{
-  G.day++;
-  if(G.day>=TOTAL_DAYS){ finalResult(); }
-  else { renderMealInput(); show('play'); }
+/* photo → analyze color via canvas (real pixel analysis) */
+$('poopFile').addEventListener('change',e=>{
+  const file=e.target.files&&e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ const img=new Image();
+    img.onload=()=>{
+      // downscale for storage
+      const c=document.createElement('canvas'),S=200,r=Math.min(S/img.width,S/img.height,1);
+      c.width=Math.round(img.width*r); c.height=Math.round(img.height*r);
+      const cx=c.getContext('2d'); cx.drawImage(img,0,0,c.width,c.height);
+      const thumb=c.toDataURL('image/jpeg',0.6);
+      // sample central 60% for color
+      const sx=Math.floor(c.width*0.2),sy=Math.floor(c.height*0.2),sw=Math.floor(c.width*0.6),sh=Math.floor(c.height*0.6);
+      const data=cx.getImageData(sx,sy,Math.max(1,sw),Math.max(1,sh)).data;
+      let R=0,G=0,B=0,n=0;
+      for(let i=0;i<data.length;i+=4){R+=data[i];G+=data[i+1];B+=data[i+2];n++;}
+      const rgb={r:Math.round(R/n),g:Math.round(G/n),b:Math.round(B/n)};
+      const col=classifyColor(rgb); col.hex=`rgb(${rgb.r},${rgb.g},${rgb.b})`;
+      recState.photo=thumb; recState.color=col;
+      $('photoBox').className='photo-box has';
+      $('photoBox').innerHTML=`<img src="${thumb}" alt=""><button class="retake" id="retakeBtn">📷 撮り直す</button>`;
+      $('retakeBtn').addEventListener('click',ev2=>{ev2.preventDefault();ev2.stopPropagation();$('poopFile').value='';$('poopFile').click();});
+      $('colorChip').querySelector('.dot').style.background=col.hex;
+      $('colorName').textContent=col.label; $('colorDesc').textContent=col.desc;
+      SND.tap(); updateRecBtn();
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
 });
-$('addBtn').addEventListener('click',onAdd);
-$('eatBtn').addEventListener('click',onEatMeal);
-$('foodInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); onAdd(); }});
 
-/* ---------- final ---------- */
-function finalResult(){
-  const res=computeResult();
-  const ri=rankInfo(res.total,res.btype);
-  const b=BRISTOL[res.btype];
-  $('finalPoop').innerHTML=(ri.crown?'<div class="crown">👑</div>':'')+
-    poopSVG({pal:palette(res),mood:res.total>=70?2:res.total>=45?1:0,
-      shine:res.total>=80?1:0, crown:false, shape:shapeOf(res.btype), w:180, seed:99});
-  $('rankTitle').textContent=ri.emoji+' '+ri.t;
-  $('rankTitle').style.color=ri.c;
+$('recBtn').addEventListener('click',()=>{
+  if(recState.shape<1||!recState.color)return;
+  ac(); SND.rec();
+  const entry={ ts:Date.now(), date:new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'}),
+    type:recState.shape, colorKey:recState.color.key, colorLabel:recState.color.label, colorHex:recState.color.hex,
+    photo:recState.photo, cls:BRISTOL[recState.shape].cls };
+  const logs=loadLogs(); logs.unshift(entry); saveLogs(logs);
+  showLogResult(entry);
+});
+
+function showLogResult(e){
+  const b=BRISTOL[e.type], col=classifyColor(hexToRgb(e.colorHex));
+  $('resPoop').innerHTML=poopSVG({pal:logPalette(e.colorKey,e.type),mood:b.cls==='good'?2:b.cls==='ok'?1:0,
+    shine:b.cls==='good'?1:0, shape:shapeOf(e.type), w:150});
+  $('resType').textContent=`${b.n}（型${e.type}）`;
+  $('resType').style.color = b.cls==='good'?'#4f8f2e':b.cls==='ok'?'#c8861f':'#d2622f';
+  $('resSub').textContent=b.d;
+  $('rdShape').textContent=b.short; $('rdColor').textContent=e.colorLabel;
+  const hints=[...b.hints, ...col.hints];
+  // dedupe by text
+  const seen=new Set(), uniq=hints.filter(h=>!seen.has(h.t)&&seen.add(h.t));
+  $('hintList').innerHTML=uniq.map(h=>`<li class="${h.w?'warn':''}">${h.t}</li>`).join('');
+  if(b.cls==='good'){ confetti(); SND.win(); }
+  show('log-result');
+}
+function hexToRgb(s){ const m=s.match(/\d+/g); return m?{r:+m[0],g:+m[1],b:+m[2]}:{r:155,g:107,b:63}; }
+
+function openHistory(){
+  const logs=loadLogs();
+  const inner=$('histInner');
+  if(logs.length===0){ inner.innerHTML='<div class="empty">まだ記録がありません💩<br>「新しく記録する」から<br>最初のうんログをつけてみよう！</div>'; show('log-history'); return; }
+  // trend over recent up to 7
+  const recent=logs.slice(0,7);
+  const cnt={good:0,ok:0,hard:0,loose:0}; recent.forEach(e=>cnt[e.cls]++);
+  let msg='', th='📊 最近の傾向';
+  const hard=cnt.hard, loose=cnt.loose, fine=cnt.good+cnt.ok, N=recent.length;
+  if(hard>=Math.ceil(N/2)) msg='ここ最近、かため傾向です。💧水分と🥦食物繊維が不足ぎみかも。意識して摂ってみましょう。';
+  else if(loose>=Math.ceil(N/2)) msg='ここ最近、ゆるめ傾向です。😮‍💨胃腸がお疲れ気味かも。脂質・刺激物・冷え・食べ過ぎに注意。';
+  else if(fine>=Math.ceil(N*0.6)) msg='いい調子！🎉 バランスのとれた腸内環境がキープできています。この調子で続けましょう。';
+  else msg='状態にばらつきがあります。食事と水分のリズムを整えると安定しやすくなります。';
+  const total=logs.length, goodAll=logs.filter(e=>e.cls==='good').length;
+  const barData=[['good','理想','#7cc15b'],['ok','ふつう','#f0c14a'],['hard','かため','#caa063'],['loose','ゆるめ','#5fa3c4']];
+  const maxC=Math.max(1,...Object.values(cnt));
+  const bars=barData.map(([k,lab,c])=>`<div class="b"><div class="bar" style="height:${(cnt[k]/maxC)*100}%;background:${c}"></div><div class="bd">${lab}<br>${cnt[k]}</div></div>`).join('');
+  inner.innerHTML=`<div class="trend"><div class="th">${th}（直近${N}件）</div><div class="tmsg">${msg}</div>
+      <div class="bars">${bars}</div>
+      <div style="font-size:11px;font-weight:700;color:#9a7a55;margin-top:10px">通算 ${total} 件記録 ／ 理想便 ${goodAll} 回 🎉</div></div>`
+    + logs.map((e,i)=>`<div class="log-row">
+        ${e.photo?`<img src="${e.photo}" alt="">`:'<div style="width:54px;height:54px;border-radius:12px;background:#f0e2c8;display:flex;align-items:center;justify-content:center;font-size:24px">💩</div>'}
+        <div class="li"><div class="ld">${e.date}</div><div class="lt">${BRISTOL[e.type].n}・${e.colorLabel}</div></div>
+        <span class="badge ${e.cls}">${BRISTOL[e.type].short}</span>
+        <button class="del" data-i="${i}">×</button></div>`).join('');
+  inner.querySelectorAll('.del').forEach(btn=>btn.addEventListener('click',()=>{
+    const logs2=loadLogs(); logs2.splice(+btn.dataset.i,1); saveLogs(logs2); openHistory();
+  }));
+  show('log-history');
+}
+function confetti(){ for(let i=0;i<22;i++){const s=document.createElement('span');s.className='confetti';
+  s.textContent=['✨','🎉','💛','⭐','💩'][i%5];s.style.left=(Math.random()*100)+'vw';
+  s.style.animationDuration=(2.6+Math.random()*3)+'s';s.style.animationDelay=(Math.random()*1.5)+'s';
+  document.body.appendChild(s);setTimeout(()=>s.remove(),6500);} }
+
+function refreshHome(){
+  const logs=loadLogs(); const st=$('streak');
+  if(logs.length===0){ st.innerHTML='きょうのうんこを記録してみよう！📷'; return; }
+  const last=logs[0]; const lastG=logs.filter(e=>e.cls==='good').length;
+  st.innerHTML=`📒 通算 <b>${logs.length}</b> 件記録中！　最新：${last.date}（${BRISTOL[last.type].short}）`;
+}
+
+/* ================= 育成ゲーム ================= */
+const TOTAL_DAYS=3;
+const STAT_INFO={fiber:{n:'食物繊維',cls:'good'},water:{n:'水分',cls:'good'},prob:{n:'善玉菌',cls:'good'},
+  fat:{n:'脂質',cls:'warn'},sugar:{n:'糖分',cls:'warn'},irrit:{n:'刺激物',cls:'warn'}};
+const FOOD_CHIPS=[
+  {e:'🥗',n:'野菜',s:{fiber:2,water:1}},{e:'🍄',n:'きのこ・海藻',s:{fiber:2,prob:1}},{e:'🍌',n:'果物',s:{fiber:1,sugar:1,water:1}},
+  {e:'🫘',n:'豆・ナッツ',s:{fiber:2}},{e:'🌾',n:'玄米・全粒',s:{fiber:2}},{e:'🍚',n:'ごはん・パン',s:{}},
+  {e:'🐟',n:'魚',s:{fat:1,prob:1}},{e:'🍗',n:'肉',s:{fat:2}},{e:'🍟',n:'揚げ物・脂',s:{fat:3}},
+  {e:'🦠',n:'発酵食品',s:{prob:3}},{e:'💧',n:'水分・スープ',s:{water:3}},{e:'🍰',n:'甘いもの',s:{sugar:3,fat:1}},
+  {e:'🌶️',n:'辛い・刺激',s:{irrit:3}},{e:'☕',n:'コーヒー・酒',s:{irrit:2}},{e:'🍠',n:'いも類',s:{fiber:3,sugar:1}},
+];
+const SLOTS=[{icon:'🌅',label:'朝食',sub:'朝ごはんは？'},{icon:'☀️',label:'昼食',sub:'ランチタイム！'},{icon:'🌙',label:'夕食',sub:'1日のしめは？'}];
+let G, currentMeal=[], busy=false, mealPhoto=null;
+function newGame(){ G={day:0,slot:0,mealCount:0,sum:{fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0}}; }
+function startGame(){ ac(); newGame(); renderMeters(); renderMealInput(); show('play'); }
+$('goGame')&&$('goGame').addEventListener('click',startGame);
+
+function computeResult(){
+  const m=Math.max(1,G.mealCount),a={}; for(const k in G.sum)a[k]=G.sum[k]/m;
+  const dry=Math.max(0,1.6-a.water)*1.3+Math.max(0,1.4-a.fiber);
+  const loose=a.fat*0.7+a.sugar*0.55+a.irrit*1.1+Math.max(0,(a.water-2.6)-a.fiber*0.4)*0.8;
+  const bristol=Math.min(7,Math.max(1,4+(loose-dry)*1.3)),C=v=>Math.max(0,Math.min(100,v));
+  const shape=C(100-Math.abs(bristol-4)*24-Math.max(0,1.2-a.fiber)*22);
+  const color=C(60+a.prob*16-a.fat*10-a.sugar*12+a.fiber*4);
+  const luster=C(55+a.water*16-Math.abs(bristol-4)*10-a.fat*6);
+  const smell=C(70+a.prob*12-a.fat*14-a.sugar*10-a.irrit*12);
+  const ease=C(70+a.fiber*8+a.water*8-Math.abs(bristol-4)*16-a.irrit*8);
+  let total=shape*.25+color*.2+luster*.15+smell*.2+ease*.2; total-=Math.max(0,(a.fat+a.sugar)-2)*6;
+  return {a,bristol,btype:Math.round(bristol),total:Math.round(C(total)),
+    dims:{形:Math.round(shape),色:Math.round(color),ツヤ:Math.round(luster),香り:Math.round(smell),快便:Math.round(ease)}};
+}
+function gamePalette(res){ const {a,btype,dims}=res;
+  if(a.fat+a.sugar>2.3)return{base:'#5d4226',dark:'#3c2a18',light:'#7a5a38'};
+  if(btype>=6)return{base:'#9c7b46',dark:'#6f562f',light:'#bb9a63'};
+  if(btype<=2)return{base:'#7a5631',dark:'#543a20',light:'#9b7748'};
+  if(dims.色>=72&&dims.ツヤ>=70)return{base:'#c08a2e',dark:'#8f6418',light:'#ecc05a'};
+  return{base:'#9b6b3f',dark:'#6e4a28',light:'#bd8e57'}; }
+function bellySVG(growth,res){ const sc=0.34+growth*0.62, pal=res?gamePalette(res):{base:'#b98a55',dark:'#8a6238',light:'#d3aa70'};
+  const mood=res?(res.total>=70?2:res.total>=45?1:0):2;
+  return `<svg viewBox="0 0 300 250" width="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs><radialGradient id="bl" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#ffe6d2"/><stop offset="100%" stop-color="#ffcdb0"/></radialGradient></defs>
+    <ellipse cx="150" cy="128" rx="135" ry="116" fill="url(#bl)" stroke="#f0b48f" stroke-width="3"/>
+    <g fill="none" stroke="var(--intestine)" stroke-width="20" stroke-linecap="round" opacity=".9"><path d="M60 60 Q150 30 240 60 Q270 110 220 130 Q150 150 90 130 Q45 150 80 195 Q150 225 230 195"/></g>
+    <g transform="translate(${150-75*sc}, ${118-95*sc})">${poopSVG({pal,mood,shape:'banana',w:150*sc})}</g></svg>`; }
+
+function renderMeters(){ const m=Math.max(1,G.mealCount),a={};for(const k in G.sum)a[k]=G.sum[k]/m;
+  $('meters').innerHTML=['fiber','water','prob','fat','sugar','irrit'].map(k=>{const i=STAT_INFO[k];
+    return `<div class="meter ${i.cls}"><div class="ml">${i.n}</div><div class="bar"><div class="fill" style="width:${Math.min(100,a[k]/2.4*100)}%"></div></div></div>`;}).join(''); }
+function updateBelly(){ const res=G.mealCount>0?computeResult():null; $('bellyHolder').innerHTML=bellySVG(G.mealCount/(TOTAL_DAYS*3),res);
+  if(G.mealCount===0)$('growComment').textContent='うんこの たね が できた'; }
+function renderMealInput(){ const slot=SLOTS[G.slot];
+  $('mealIcon').textContent=slot.icon; $('mealTitle').textContent=`${G.day+1}日目・${slot.label}`; $('mealSub').textContent=slot.sub;
+  $('dots').innerHTML=Array.from({length:TOTAL_DAYS*3},(_,i)=>`<i class="${i<G.mealCount?'done':i===G.mealCount?'now':''}"></i>`).join('');
+  $('menuHead').innerHTML=`${slot.label}は何を食べた？ <span>食べた分だけタップ</span>`;
+  $('chipGrid').innerHTML=FOOD_CHIPS.map((f,i)=>{const tags=[];
+    if(f.s.fiber>=2)tags.push('<span class="tg g">繊維</span>');if(f.s.prob>=2)tags.push('<span class="tg g">善玉菌</span>');
+    if(f.s.water>=2)tags.push('<span class="tg g">水分</span>');if(f.s.fat>=2)tags.push('<span class="tg w">脂質</span>');
+    if(f.s.sugar>=2)tags.push('<span class="tg w">糖分</span>');if(f.s.irrit>=2)tags.push('<span class="tg w">刺激</span>');
+    return `<div class="fchip" data-i="${i}"><div class="e">${f.e}</div><div class="n">${f.n}</div><div class="tg">${tags.join(' ')||'&nbsp;'}</div></div>`;}).join('');
+  $('chipGrid').querySelectorAll('.fchip').forEach(el=>el.addEventListener('click',()=>addChip(FOOD_CHIPS[+el.dataset.i])));
+  currentMeal=[]; mealPhoto=null;
+  $('mealPhotoBtn').className='pbtn'; $('mealPhotoBtn').textContent='📷 ごはんの写真（任意）';
+  renderPlate(); updateBelly();
+}
+function addChip(f){ if(busy)return; SND.tap(); currentMeal.push(f); renderPlate(); }
+function renderPlate(){ const p=$('plateItems');
+  if(currentMeal.length===0){ p.innerHTML='<span class="plate-empty">タップして追加してね</span>'; $('eatBtn').disabled=true; return; }
+  p.innerHTML=currentMeal.map((f,i)=>`<span class="pitem">${f.e}${f.n}<button class="x" data-i="${i}">×</button></span>`).join('');
+  p.querySelectorAll('.x').forEach(b=>b.addEventListener('click',()=>{currentMeal.splice(+b.dataset.i,1);renderPlate();}));
+  $('eatBtn').disabled=false; }
+function combineMeal(){ const s={fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0};
+  currentMeal.forEach(f=>{for(const k in f.s)s[k]+=f.s[k];}); for(const k in s)s[k]=Math.min(4,s[k]); return s; }
+$('mealPhotoBtn').addEventListener('click',()=>$('mealFile').click());
+$('mealFile').addEventListener('change',e=>{ if(e.target.files&&e.target.files[0]){ mealPhoto=true;
+  $('mealPhotoBtn').className='pbtn has'; $('mealPhotoBtn').textContent='📷 写真メモ済み ✓'; SND.tap(); } });
+$('eatBtn').addEventListener('click',()=>{ if(busy||currentMeal.length===0)return; const s=combineMeal(); eatMeal(s); });
+
+function eatMeal(stats){ if(busy)return; busy=true; ac(); SND.eat();
+  $('eatFlash').classList.remove('go');void $('eatFlash').offsetWidth;$('eatFlash').classList.add('go');
+  for(const k in stats)G.sum[k]+=stats[k]; G.mealCount++;
+  let d=0; ['fiber','water','prob','fat','sugar','irrit'].forEach(k=>{ if(stats[k]>0){const i=STAT_INFO[k];const v=stats[k]%1?stats[k].toFixed(1):stats[k];
+    setTimeout(()=>gainPop(`${i.n}+${v}`,i.cls==='good'?'#4f8f2e':'#d2622f'),d);d+=110;}});
+  renderMeters();
+  setTimeout(()=>{ updateBelly(); const res=computeResult();
+    $('growComment').textContent=res.total>=70?'いい感じに育ってる✨':res.total>=45?'まあまあ育ってきた':'お腹の調子が心配…';
+    G.slot++; if(G.slot>=3){G.slot=0; setTimeout(()=>{busy=false;dayInterim();},420);} else {busy=false;renderMealInput();} },420); }
+function gainPop(t,c){ const sp=document.createElement('div');sp.className='gain-pop';sp.textContent=t;sp.style.color=c;
+  sp.style.left=(35+Math.random()*30)+'%';sp.style.top=(20+Math.random()*20)+'%';sp.style.animation='floatup 1.3s ease forwards';
+  $('bellyHolder').parentElement.appendChild(sp);setTimeout(()=>sp.remove(),1300); }
+function dayInterim(){ const res=computeResult(),b=BRISTOL[res.btype];
+  $('dayTitle').textContent=`${G.day+1}日目 おわり 🚽`;
+  $('dayPoop').innerHTML=poopSVG({pal:gamePalette(res),mood:res.total>=70?2:res.total>=45?1:0,shine:res.total>=80?1:0,shape:shapeOf(res.btype),w:140});
+  $('dayVerdict').textContent=`今朝のうんこ：${b.n}`;
+  $('dayVerdict').style.color=res.total>=70?'#4f8f2e':res.total>=45?'#c8861f':'#d2622f';
+  $('dayVerdictSub').textContent=b.d;
+  $('nextDayBtn').textContent=G.day+1>=TOTAL_DAYS?'最終結果を見る':'つぎの日へ'; SND.day(); show('day'); }
+$('nextDayBtn').addEventListener('click',()=>{ G.day++; if(G.day>=TOTAL_DAYS)finalResult(); else{renderMealInput();show('play');} });
+function rankInfo(t,bt){ if(t>=90)return{t:'伝説の黄金便',c:'#f5c518',emoji:'👑',crown:1};
+  if(t>=80)return{t:'ピカピカ黄金便',c:'#e0a91a',emoji:'✨',crown:1};
+  if(t>=70)return{t:'健康なバナナ便',c:'#c8861f',emoji:'🍌',crown:0};
+  if(t>=55)return{t:'まあまあ普通便',c:'#b07a3a',emoji:'🙂',crown:0};
+  if(t>=40)return{t:'ちょい不調便',c:'#a06a3a',emoji:'😅',crown:0};
+  if(bt<=2)return{t:'コロコロ侯爵',c:'#8a6a40',emoji:'🪨',crown:0};
+  if(bt>=6)return{t:'ゆるゆる将軍',c:'#7d6a45',emoji:'💧',crown:0}; return{t:'うんこ修行中',c:'#7d6a45',emoji:'💀',crown:0}; }
+function finalResult(){ const res=computeResult(),ri=rankInfo(res.total,res.btype),b=BRISTOL[res.btype];
+  $('finalPoop').innerHTML=(ri.crown?'<div class="crown">👑</div>':'')+poopSVG({pal:gamePalette(res),mood:res.total>=70?2:res.total>=45?1:0,shine:res.total>=80?1:0,shape:shapeOf(res.btype),w:170});
+  $('rankTitle').textContent=ri.emoji+' '+ri.t; $('rankTitle').style.color=ri.c;
   $('bristolBadge').textContent=`ブリストル型：${res.btype} ／ ${b.n}`;
   $('totalScore').innerHTML=res.total+'<small>点</small>';
-  // bars
-  $('finalBars').innerHTML=Object.entries(res.dims).map(([k,v])=>
-    `<div class="scbar"><span class="lab">${k}</span><span class="track"><span class="v" data-v="${v}"></span></span><span class="num">${v}</span></div>`
-  ).join('');
+  $('finalBars').innerHTML=Object.entries(res.dims).map(([k,v])=>`<div class="scbar"><span class="lab">${k}</span><span class="track"><span class="v" data-v="${v}"></span></span><span class="num">${v}</span></div>`).join('');
   setTimeout(()=>$('finalBars').querySelectorAll('.v').forEach(el=>el.style.width=el.dataset.v+'%'),120);
-  // world ranking
-  renderRanking(res.total);
-  // best
-  const best=+(localStorage.getItem('unkodoBest')||0);
-  if(res.total>best) localStorage.setItem('unkodoBest',res.total);
-  window.__lastResult=res;
-  show('final');
-  if(res.total>=70){ SND.win(); confetti(); } else SND.day();
-}
-function renderRanking(total){
-  const TOTAL_PLAYERS=2847193;
-  const pctTop=Math.max(0.01, Math.pow(1-total/100,1.7)*100); // smaller = better
-  let rank=Math.max(1, Math.round(TOTAL_PLAYERS*pctTop/100));
-  const fmt=n=>n.toLocaleString('en-US');
-  $('worldRank').innerHTML=`🌍 世界 <b>${fmt(rank)}</b> 位<br><span class="pct">${fmt(TOTAL_PLAYERS)}人中　上位 ${pctTop<1?pctTop.toFixed(2):pctTop.toFixed(1)}%</span>`;
-  // leaderboard: top fixed funny + player row
-  const top=[
-    {r:1,nm:'👑 黄金便のカリスマ',sc:99},
-    {r:2,nm:'Dr.ウンコロジー',sc:98},
-    {r:3,nm:'腸活の鬼',sc:97},
-    {r:4,nm:'快便番長',sc:95},
-    {r:5,nm:'フローラ女王',sc:93},
-  ];
+  const TP=2847193,pct=Math.max(0.01,Math.pow(1-res.total/100,1.7)*100),rank=Math.max(1,Math.round(TP*pct/100)),fmt=n=>n.toLocaleString('en-US');
+  $('worldRank').innerHTML=`🌍 世界 <b>${fmt(rank)}</b> 位<br><span class="pct">${fmt(TP)}人中　上位 ${pct<1?pct.toFixed(2):pct.toFixed(1)}%</span>`;
+  const top=[{r:1,nm:'👑 黄金便のカリスマ',sc:99},{r:2,nm:'Dr.ウンコロジー',sc:98},{r:3,nm:'腸活の鬼',sc:97},{r:4,nm:'快便番長',sc:95},{r:5,nm:'フローラ女王',sc:93}];
   let html=top.map(t=>`<div class="row"><span class="rk">${t.r}</span><span class="nm">${t.nm}</span><span class="sc">${t.sc}</span></div>`).join('');
-  if(rank>6) html+=`<div class="ellip">⋮</div>`;
-  html+=`<div class="row me"><span class="rk">${rank<=5?rank:fmt(rank)}</span><span class="nm">🫵 あなた</span><span class="sc">${total}</span></div>`;
+  if(rank>6)html+=`<div class="ellip">⋮</div>`;
+  html+=`<div class="row me"><span class="rk">${rank<=5?rank:fmt(rank)}</span><span class="nm">🫵 あなた</span><span class="sc">${res.total}</span></div>`;
   $('leaderboard').innerHTML=html;
-}
-function confetti(){
-  for(let i=0;i<26;i++){const s=document.createElement('span');
-    s.className='confetti';s.textContent=['✨','🎉','💛','⭐','💩','🏆'][i%6];
-    s.style.left=(Math.random()*100)+'vw';s.style.animationDuration=(2.6+Math.random()*3)+'s';
-    s.style.animationDelay=(Math.random()*1.5)+'s';document.body.appendChild(s);
-    setTimeout(()=>s.remove(),6500);}
-}
+  show('final'); if(res.total>=70){SND.win();confetti();}else SND.day(); }
+$('retryBtn').addEventListener('click',()=>{document.querySelectorAll('.confetti').forEach(c=>c.remove());startGame();});
 
-$('shareBtn').addEventListener('click',async()=>{
-  const r=window.__lastResult; if(!r)return;
-  const ri=rankInfo(r.total,r.btype);
-  const txt=`【うんこ道】3日間の腸活の結果…\n${ri.emoji}${ri.t}！ ${r.total}点（ブリストル${r.btype}型）\nめざせ世界一の黄金便💩✨`;
-  const url=location.href;
-  try{
-    if(navigator.share){ await navigator.share({title:'うんこ道',text:txt,url}); }
-    else { await navigator.clipboard.writeText(txt+'\n'+url); $('shareBtn').textContent='コピーしたよ！'; setTimeout(()=>$('shareBtn').textContent='結果をシェア',1500); }
-  }catch(e){}
-});
-$('retryBtn').addEventListener('click',()=>{ document.querySelectorAll('.confetti').forEach(c=>c.remove()); startGame(); });
-
-/* ---------- title / start ---------- */
-function refreshBest(){
-  const best=+(localStorage.getItem('unkodoBest')||0);
-  if(best>0){ $('bestBadge').style.display='inline-block'; $('bestBadge').textContent=`🏆 自己ベスト：${best}点`; }
-}
-function startGame(){ ac(); newGame(); renderMeters(); renderMealInput(); show('play'); }
-$('startBtn').addEventListener('click',startGame);
-$('howBtn').addEventListener('click',()=>{
-  alert('【あそびかた】\n\n1日3食×3日間。各食事で、食べたものを1品ずつ「＋追加」していきます。\n（例：とりもも肉 → サラダ → 米…と複数追加OK！世界中の料理に対応）\n\n追加した献立の栄養を合計して、腸内のうんこに反映します。そろったら「この食事を食べる」をタップ。\n\n🌿食物繊維・💧水分・🦠善玉菌 をバランスよく取ると、つるんとした理想の「黄金バナナ便」に育ちます✨\n\n🍖脂質・🍰糖分・🌶️刺激物 が多すぎると、コロコロ便や下痢便に…💦\n\n最終的なうんこの美しさ（形・色・ツヤ・香り・快便度）が世界ランキングのスコアになります！');
-});
-
-refreshBest();
-show('title');
-
-/* expose for tests */
-window.__unko={get G(){return G;}, computeResult, startGame, eatMeal, analyzeFood, FOOD_DB, finalResult, dayInterim, newGame};
+/* init */
+refreshHome(); show('home');
+window.__unko={get G(){return G;}, computeResult, classifyColor, rgb2hsl, BRISTOL, loadLogs, saveLogs, openRecord, openHistory, startGame, recState:()=>recState, addChip, eatMeal, show};
 </script>
 </body>
 </html>
