@@ -145,19 +145,28 @@
   #foodInput:focus{border-color:var(--accent);}
   #foodInput::placeholder{color:#c8b18f;font-weight:500;}
   #foodInput:disabled{opacity:.6;}
-  .btn.eat{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:16px;padding:0 22px;border-radius:16px;
+  .btn.add{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:15px;padding:0 18px;border-radius:16px;
     flex:0 0 auto;box-shadow:0 4px 0 var(--ink);}
+  .btn.add:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);}
+  .meal-list{display:flex;flex-direction:column;gap:6px;margin-top:11px;}
+  .meal-item{display:flex;align-items:center;gap:9px;background:#fffaf0;border:2px solid #e6d4b3;border-radius:14px;
+    padding:8px 8px 8px 12px;animation:fadein .2s ease;}
+  .meal-item .mtxt{flex:1;min-width:0;font-weight:900;font-size:14px;color:#5b3a1e;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .meal-item .mcat{flex:0 0 auto;font-size:11px;color:#9a7a55;font-weight:700;}
+  .meal-item .rm{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:none;background:#f0d9bd;color:#7a5a38;
+    font-weight:900;cursor:pointer;font-size:15px;line-height:1;}
+  .meal-item .rm:active{background:#e3c49f;}
+  .meal-empty{font-size:12px;color:#b29a78;font-weight:700;text-align:center;margin-top:12px;}
+  .meal-sum{margin-top:11px;text-align:center;}
+  .meal-sum .sum-label{font-size:11px;font-weight:900;color:#7a5a38;letter-spacing:.1em;margin-bottom:6px;}
+  .meal-sum .scs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+  .meal-sum .sc{font-size:12px;font-weight:900;border-radius:999px;padding:3px 10px;background:#eee;color:#777;}
+  .meal-sum .sc.g{background:#e4f5d6;color:#4f8f2e;}
+  .meal-sum .sc.w{background:#ffe2d3;color:#d2622f;}
+  .btn.eat{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;box-shadow:0 4px 0 var(--ink);}
+  .btn.eat.full{width:100%;margin-top:13px;padding:14px;border-radius:16px;font-size:18px;}
   .btn.eat:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);}
-  .analysis{padding:2px 16px 14px;text-align:center;animation:fadein .25s ease;}
-  .ana-title{font-family:'Mochiy Pop One',sans-serif;font-size:14px;color:#5b3a1e;margin-bottom:8px;word-break:break-word;}
-  .ana-cats{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:8px;}
-  .ana-cats .cat{font-size:12px;font-weight:900;background:#fff3df;border:2px solid #e6d4b3;border-radius:999px;
-    padding:3px 10px;color:#a4652f;}
-  .ana-stats{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
-  .ana-stats .sc{font-size:12px;font-weight:900;border-radius:999px;padding:3px 10px;background:#eee;color:#777;}
-  .ana-stats .sc.g{background:#e4f5d6;color:#4f8f2e;}
-  .ana-stats .sc.w{background:#ffe2d3;color:#d2622f;}
-  .ana-note{font-size:11px;color:#9a7a55;margin-top:8px;font-weight:700;}
+  .btn.eat:disabled{opacity:.45;filter:grayscale(.5);}
 
   /* ============ DAY INTERIM ============ */
   #screen-day,#screen-final{align-items:center;justify-content:center;text-align:center;padding:28px 22px;overflow-y:auto;}
@@ -251,14 +260,16 @@
     <div class="meters" id="meters"></div>
 
     <div class="menu-wrap">
-      <div class="menu-head" id="menuHead">何を食べた？ <span>世界中の料理を入力してOK</span></div>
-      <div class="analysis" id="analysis" style="display:none"></div>
+      <div class="menu-head" id="menuHead">朝食を入力 <span>食べたものを1品ずつ追加</span></div>
       <div class="input-area" id="inputArea">
         <div class="examples" id="examples"></div>
         <div class="input-row">
-          <input id="foodInput" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="例：寿司、ビリヤニ、ステーキ…">
-          <button class="btn eat" id="eatBtn" data-mode="eat">食べる</button>
+          <input id="foodInput" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="例：とりもも肉、サラダ、米…">
+          <button class="btn add" id="addBtn">＋追加</button>
         </div>
+        <div class="meal-list" id="mealList"></div>
+        <div class="meal-sum" id="mealSum"></div>
+        <button class="btn eat full" id="eatBtn" disabled>この食事を食べる 🍽️</button>
       </div>
     </div>
   </section>
@@ -366,9 +377,9 @@ const FOOD_DB = [
   // --- 肉・脂質 ---
   R('🥩 赤身肉',['牛','beef','ステーキ','steak','ラム','lamb','ハンバーグ','焼肉','yakiniku','bbq','バーベキュー','プルコギ','bulgogi','ローストビーフ','すき焼き'],{fat:3}),
   R('🐖 豚・加工肉',['豚','pork','ポーク','とんかつ','カツ','cutlet','ベーコン','bacon','ソーセージ','sausage','ハム','ham','スパム','spam','チャーシュー','サラミ','salami','生ハム','prosciutto'],{fat:3}),
-  R('🍗 鶏肉',['鶏','chicken','チキン','唐揚げ','からあげ','fried chicken','ナゲット','nugget','手羽','焼き鳥','yakitori'],{fat:2}),
+  R('🍗 鶏肉',['鶏','とり肉','とりにく','とりもも','鶏もも','もも肉','むね肉','ささみ','chicken','チキン','唐揚げ','からあげ','fried chicken','ナゲット','nugget','手羽','焼き鳥','やきとり','yakitori'],{fat:2,prob:0}),
   R('🍔 ファストフード',['ハンバーガー','バーガー','burger','ホットドッグ','hot dog','ケバブ','kebab','ピザ','pizza','フライドチキン','ハンバーグ'],{fat:3,sugar:1}),
-  R('🍖 肉',['肉','meat','ジビエ','モツ','ホルモン'],{fat:2}),
+  R('🍖 肉',['肉','meat','ジビエ','モツ','ホルモン','ひき肉','挽肉','鴨','馬肉','肉じゃが'],{fat:1}),
   // --- 揚げ物・高脂質 ---
   R('🍟 揚げ物',['揚げ','フライ','fried','天ぷら','tempura','フリット','コロッケ','croquette','春巻き','spring roll','ポテト','french fries','fries','チップス','chips','サモサ','samosa','カツ丼'],{fat:3}),
   R('🍲 アジア飯',['パッタイ','pad thai','ナシゴレン','nasi','ビビンバ','bibimbap','キンパ','gimbap','チャプチェ','カオマンガイ','khao','ガパオ','チヂミ','ヤンニョム','ルーロー飯','海南鶏飯'],{fat:1,fiber:1,sugar:1}),
@@ -573,7 +584,8 @@ function renderMeters(){
       <div class="bar"><div class="fill" style="width:${pct}%"></div></div></div>`;
   }).join('');
 }
-let pendingMeal=null;
+let currentMeal=[];  // [{text, res}] 1食ぶんの献立
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function renderMealInput(){
   const slot=SLOTS[G.slot];
   $('mealIcon').textContent=slot.icon;
@@ -583,45 +595,53 @@ function renderMealInput(){
     const cls=i<G.mealCount?'done':(i===G.mealCount?'now':'');
     return `<i class="${cls}"></i>`;
   }).join('');
-  $('menuHead').innerHTML=`${slot.label}、何を食べた？ <span>世界中の料理を入力してOK</span>`;
-  $('analysis').style.display='none'; $('analysis').innerHTML='';
-  $('inputArea').style.display='block';
+  $('menuHead').innerHTML=`${slot.label}を入力 <span>食べたものを1品ずつ追加</span>`;
   const inp=$('foodInput'); inp.value=''; inp.disabled=false;
-  const btn=$('eatBtn'); btn.textContent='食べる'; btn.dataset.mode='eat';
   $('examples').innerHTML=EXAMPLES.map(e=>`<span class="chip">${e}</span>`).join('');
   $('examples').querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{inp.value=c.textContent;inp.focus();}));
-  pendingMeal=null;
+  currentMeal=[];
+  renderMealList();
   updateBelly();
 }
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function showAnalysis(txt,res){
+function combineMeal(){
+  const s={fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0};
+  currentMeal.forEach(it=>{ for(const k in it.res.s) s[k]+=it.res.s[k]; });
+  for(const k in s) s[k]=Math.round(Math.min(4,s[k])*10)/10; // 1食ぶんの上限
+  return s;
+}
+function renderMealList(){
+  const list=$('mealList');
+  if(currentMeal.length===0){
+    list.innerHTML='<div class="meal-empty">まだ何も追加されていません</div>';
+    $('mealSum').innerHTML=''; $('eatBtn').disabled=true; return;
+  }
+  list.innerHTML=currentMeal.map((it,i)=>
+    `<div class="meal-item"><span class="mtxt">${escapeHtml(it.text)}</span>`+
+    `<span class="mcat">${it.res.cats[0]||''}</span>`+
+    `<button class="rm" data-i="${i}" aria-label="削除">×</button></div>`).join('');
+  list.querySelectorAll('.rm').forEach(b=>b.addEventListener('click',()=>{currentMeal.splice(+b.dataset.i,1);renderMealList();}));
+  const tot=combineMeal();
   const order=[['fiber','食物繊維'],['water','水分'],['prob','善玉菌'],['fat','脂質'],['sugar','糖分'],['irrit','刺激']];
-  const chips=order.filter(([k])=>res.s[k]>0).map(([k,n])=>{
+  const chips=order.filter(([k])=>tot[k]>0).map(([k,n])=>{
     const good=(k==='fiber'||k==='water'||k==='prob');
-    const v=res.s[k]%1?res.s[k].toFixed(1):res.s[k];
+    const v=tot[k]%1?tot[k].toFixed(1):tot[k];
     return `<span class="sc ${good?'g':'w'}">${n} +${v}</span>`;
   }).join('');
-  $('analysis').innerHTML=`<div class="ana-title">🔍「${escapeHtml(txt)}」を消化…</div>
-    <div class="ana-cats">${res.cats.map(c=>`<span class="cat">${c}</span>`).join('')}</div>
-    <div class="ana-stats">${chips||'<span class="sc">影響ほぼなし</span>'}</div>
-    ${res.unknown?'<div class="ana-note">※データになかったので、ざっくり推定したよ</div>':''}`;
-  $('analysis').style.display='block';
+  $('mealSum').innerHTML=`<div class="sum-label">🍽 この食事の合計</div><div class="scs">${chips||'<span class="sc">影響ほぼなし</span>'}</div>`;
+  $('eatBtn').disabled=false;
 }
-function onEatBtn(){
+function onAdd(){
   if(busy)return;
-  const btn=$('eatBtn');
-  if(btn.dataset.mode==='eat'){
-    const txt=$('foodInput').value.trim();
-    if(!txt){ $('foodInput').focus(); return; }
-    ac(); beep(520,.06,'triangle',.1,120);
-    const res=analyzeFood(txt);
-    pendingMeal=res.s;
-    showAnalysis(txt,res);
-    btn.textContent='つぎへ ▶'; btn.dataset.mode='next';
-    $('foodInput').disabled=true; $('foodInput').blur();
-  } else {
-    if(pendingMeal){ const s=pendingMeal; pendingMeal=null; eatMeal(s); }
-  }
+  const inp=$('foodInput'); const txt=inp.value.trim();
+  if(!txt){ inp.focus(); return; }
+  ac(); beep(520,.06,'triangle',.09,120);
+  currentMeal.push({text:txt, res:analyzeFood(txt)});
+  inp.value=''; inp.focus();
+  renderMealList();
+}
+function onEatMeal(){
+  if(busy||currentMeal.length===0)return;
+  const s=combineMeal(); currentMeal=[]; eatMeal(s);
 }
 function updateBelly(){
   const growth=G.mealCount/(TOTAL_DAYS*3);
@@ -643,7 +663,6 @@ let busy=false;
 function eatMeal(stats){
   if(busy)return; busy=true;
   ac(); SND.eat();
-  $('analysis').style.display='none';
   $('eatFlash').classList.remove('go'); void $('eatFlash').offsetWidth; $('eatFlash').classList.add('go');
   // apply
   for(const k in stats) G.sum[k]+=stats[k];
@@ -690,8 +709,9 @@ $('nextDayBtn').addEventListener('click',()=>{
   if(G.day>=TOTAL_DAYS){ finalResult(); }
   else { renderMealInput(); show('play'); }
 });
-$('eatBtn').addEventListener('click',onEatBtn);
-$('foodInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); onEatBtn(); }});
+$('addBtn').addEventListener('click',onAdd);
+$('eatBtn').addEventListener('click',onEatMeal);
+$('foodInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); onAdd(); }});
 
 /* ---------- final ---------- */
 function finalResult(){
@@ -766,7 +786,7 @@ function refreshBest(){
 function startGame(){ ac(); newGame(); renderMeters(); renderMealInput(); show('play'); }
 $('startBtn').addEventListener('click',startGame);
 $('howBtn').addEventListener('click',()=>{
-  alert('【あそびかた】\n\n1日3食×3日間、食べたものを自由に入力します。\n（例：寿司、ビリヤニ、ステーキ、麻婆豆腐…世界中の料理OK！）\n\n入力した料理の栄養を自動で解析して、腸内のうんこに反映します。\n\n🌿食物繊維・💧水分・🦠善玉菌 をバランスよく取ると、つるんとした理想の「黄金バナナ便」に育ちます✨\n\n🍖脂質・🍰糖分・🌶️刺激物 が多すぎると、コロコロ便や下痢便に…💦\n\n最終的なうんこの美しさ（形・色・ツヤ・香り・快便度）が世界ランキングのスコアになります！');
+  alert('【あそびかた】\n\n1日3食×3日間。各食事で、食べたものを1品ずつ「＋追加」していきます。\n（例：とりもも肉 → サラダ → 米…と複数追加OK！世界中の料理に対応）\n\n追加した献立の栄養を合計して、腸内のうんこに反映します。そろったら「この食事を食べる」をタップ。\n\n🌿食物繊維・💧水分・🦠善玉菌 をバランスよく取ると、つるんとした理想の「黄金バナナ便」に育ちます✨\n\n🍖脂質・🍰糖分・🌶️刺激物 が多すぎると、コロコロ便や下痢便に…💦\n\n最終的なうんこの美しさ（形・色・ツヤ・香り・快便度）が世界ランキングのスコアになります！');
 });
 
 refreshBest();
