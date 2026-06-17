@@ -2,698 +2,666 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>うんこタワー 〜目指せ1000段〜</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>うんこ道 〜めざせ世界一の黄金便〜</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#4a2c17;
-    --cream:#fff6e3;
-    --accent:#ff8a3d;
+    --ink:#5b3a1e;
+    --cream:#fff4dd;
+    --paper:#fffaf0;
+    --accent:#ff914d;
+    --accent2:#ffb347;
+    --good:#7cc15b;
+    --warn:#ff8a5c;
     --gold:#f5c518;
+    --pink:#ffb3b3;
+    --intestine:#ff9aa9;
+    --intestine-d:#e57689;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;overflow:hidden;background:#ffe9c7;
-    font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;color:var(--ink);
-    touch-action:manipulation; user-select:none;-webkit-user-select:none;}
-  #c{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:pointer;}
+  html,body{height:100%;}
+  body{
+    font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 18% 12%, #fff7e6, transparent 45%),
+      radial-gradient(circle at 85% 8%, #ffe9c9, transparent 40%),
+      linear-gradient(160deg,#ffe6c0 0%, #ffd9a8 55%, #ffcf9a 100%);
+    background-attachment:fixed;
+    overflow:hidden; user-select:none;-webkit-user-select:none;
+    -webkit-text-size-adjust:100%;
+  }
+  /* phone-shaped centered column */
+  #app{
+    position:relative;width:100%;max-width:460px;height:100dvh;height:100vh;margin:0 auto;
+    display:flex;flex-direction:column;overflow:hidden;
+    background:linear-gradient(175deg, #fffdf8, #fff3e0);
+    box-shadow:0 0 60px rgba(91,58,30,.22);
+  }
+  @media(min-width:480px){ #app{border-left:2px solid rgba(91,58,30,.12);border-right:2px solid rgba(91,58,30,.12);} }
 
-  /* ---------- HUD ---------- */
-  #hud{position:fixed;inset:0;pointer-events:none;display:none;}
-  #count{
-    position:absolute;top:14px;left:50%;transform:translateX(-50%);
-    font-family:'Mochiy Pop One',sans-serif;font-size:clamp(34px,7vw,56px);
-    color:#fff;text-shadow:0 3px 0 var(--ink), 0 6px 14px rgba(74,44,23,.35);
-    letter-spacing:.02em;line-height:1;
-  }
-  #count small{font-size:.45em;}
-  #tier{
-    position:absolute;top:calc(14px + clamp(38px,7.5vw,60px));left:50%;transform:translateX(-50%);
-    font-weight:900;font-size:clamp(13px,2.6vw,17px);color:var(--ink);
-    background:rgba(255,255,255,.85);padding:3px 14px;border-radius:999px;
-    border:2px solid var(--ink);box-shadow:0 3px 0 rgba(74,44,23,.25);white-space:nowrap;
-  }
-  #lives{position:absolute;top:14px;left:14px;font-size:clamp(20px,4.5vw,28px);letter-spacing:2px;filter:drop-shadow(0 2px 0 rgba(74,44,23,.3));}
-  #lives .lost{filter:grayscale(1);opacity:.35;}
-  #windbox{
-    position:absolute;top:14px;right:14px;text-align:right;
-    background:rgba(255,255,255,.82);border:2px solid var(--ink);border-radius:14px;
-    padding:6px 10px;min-width:104px;box-shadow:0 3px 0 rgba(74,44,23,.25);
-  }
-  #windbox .lbl{font-size:11px;font-weight:900;letter-spacing:.15em;}
-  #windarrow{font-size:20px;line-height:1.1;font-weight:900;}
-  #windbar{height:6px;border-radius:99px;background:#e8dcc8;margin-top:4px;overflow:hidden;position:relative;}
-  #windfill{position:absolute;top:0;bottom:0;left:50%;background:#3fa7d6;border-radius:99px;}
-  /* balance meter */
-  #balwrap{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);width:min(60vw,300px);text-align:center;}
-  #balwrap .lbl{font-size:11px;font-weight:900;letter-spacing:.2em;margin-bottom:3px;color:var(--ink);text-shadow:0 1px 0 #fff;}
-  #balbar{height:12px;border-radius:99px;background:rgba(255,255,255,.85);border:2px solid var(--ink);position:relative;overflow:hidden;}
-  #balbar::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(74,44,23,.4);}
-  #baldot{position:absolute;top:1px;width:14px;height:6px;border-radius:99px;background:var(--accent);transition:left .15s ease, background .2s;}
-  /* progress to next color */
-  #nextwrap{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);width:min(46vw,220px);}
-  #nextbar{height:7px;border-radius:99px;background:rgba(255,255,255,.7);border:1.5px solid var(--ink);overflow:hidden;}
-  #nextfill{height:100%;background:var(--gold);width:0%;}
-  #nextlbl{font-size:10px;font-weight:700;text-align:center;margin-top:2px;color:var(--ink);text-shadow:0 1px 0 #fff;}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;}
+  .screen.active{display:flex;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 
-  #toast{
-    position:absolute;top:34%;left:50%;transform:translate(-50%,-50%) scale(0);
-    font-family:'Mochiy Pop One',sans-serif;font-size:clamp(26px,6vw,44px);
-    color:#fff;text-shadow:0 3px 0 var(--ink),0 6px 16px rgba(0,0,0,.25);
-    white-space:nowrap;pointer-events:none;
+  /* ============ TITLE ============ */
+  #screen-title{align-items:center;justify-content:center;text-align:center;padding:30px 24px;}
+  .logo{
+    font-family:'Mochiy Pop One',sans-serif;line-height:1.04;color:#a4652f;
+    font-size:clamp(40px,15vw,64px);
+    text-shadow:0 3px 0 #5b3a1e, 0 7px 0 rgba(91,58,30,.18), 0 12px 26px rgba(91,58,30,.35);
+    transform:rotate(-3deg);
   }
-  #toast.pop{animation:toastpop 1.1s cubic-bezier(.2,1.6,.4,1) forwards;}
-  @keyframes toastpop{
-    0%{transform:translate(-50%,-50%) scale(0) rotate(-8deg);}
-    35%{transform:translate(-50%,-50%) scale(1.08) rotate(2deg);}
-    70%{transform:translate(-50%,-50%) scale(1);opacity:1;}
-    100%{transform:translate(-50%,-62%) scale(1);opacity:0;}
-  }
-
-  #mute{position:fixed;bottom:14px;right:14px;z-index:30;pointer-events:auto;
-    width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);
-    background:rgba(255,255,255,.85);font-size:20px;cursor:pointer;box-shadow:0 3px 0 rgba(74,44,23,.3);}
-
-  /* ---------- overlays ---------- */
-  .ov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;z-index:20;padding:24px;}
-  .hidden{display:none !important;}
-  #title{background:radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.55), rgba(255,233,199,0) 60%);}
-  .bigtitle{
-    font-family:'Mochiy Pop One',sans-serif;font-size:clamp(44px,11vw,92px);line-height:1.05;
-    color:#a4652f;
-    text-shadow:0 4px 0 #4a2c17, 0 9px 0 rgba(74,44,23,.18), 0 14px 30px rgba(74,44,23,.35);
-    transform:rotate(-3deg);margin-bottom:6px;
-  }
-  .bigtitle .y2{display:block;font-size:.42em;color:#fff;letter-spacing:.25em;transform:rotate(1.5deg);}
-  .subtitle{font-weight:900;font-size:clamp(14px,3vw,19px);margin:14px 0 4px;background:#fff;border:2px solid var(--ink);
-    padding:6px 18px;border-radius:999px;box-shadow:0 3px 0 rgba(74,44,23,.25);transform:rotate(-1deg);}
-  .rules{font-size:clamp(12px,2.6vw,15px);font-weight:700;line-height:2;margin:10px 0 6px;color:#6b4a2c;}
+  .logo .sub{display:block;font-size:.34em;color:#fff;letter-spacing:.12em;margin-top:10px;transform:rotate(1.5deg);
+    text-shadow:0 2px 0 #5b3a1e;}
+  .title-poop{font-size:clamp(80px,26vw,120px);margin:6px 0 4px;filter:drop-shadow(0 8px 14px rgba(91,58,30,.3));animation:bob 2.4s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-10px) rotate(4deg);}}
+  .pitch{font-weight:700;font-size:clamp(13px,3.6vw,15px);line-height:1.9;color:#6b4a2c;margin:18px 0 4px;max-width:320px;}
+  .pitch b{color:#c8761f;}
+  .best-badge{margin-top:14px;font-weight:900;font-size:13px;color:#a87900;background:#fff5cf;
+    border:2px solid #e8c14a;border-radius:999px;padding:6px 16px;box-shadow:0 3px 0 rgba(168,121,0,.25);}
   .btn{
-    pointer-events:auto;cursor:pointer;margin-top:18px;
-    font-family:'Mochiy Pop One',sans-serif;font-size:clamp(20px,4.5vw,30px);
-    color:#fff;background:linear-gradient(180deg,#ffa253,#ff7a1e);
-    border:3px solid var(--ink);border-radius:999px;padding:14px 46px;
-    box-shadow:0 6px 0 var(--ink), 0 12px 22px rgba(74,44,23,.35);
-    transition:transform .08s, box-shadow .08s;
+    cursor:pointer;border:none;font-family:'Mochiy Pop One',sans-serif;color:#fff;
+    background:linear-gradient(180deg,var(--accent2),var(--accent));
+    border:3px solid var(--ink);border-radius:999px;
+    box-shadow:0 6px 0 var(--ink), 0 12px 22px rgba(91,58,30,.32);
+    transition:transform .08s, box-shadow .08s; -webkit-appearance:none;
   }
   .btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink);}
-  .best{margin-top:16px;font-weight:900;font-size:clamp(13px,2.8vw,16px);color:#6b4a2c;}
-  .trophy-mini{font-size:clamp(15px,3vw,18px);margin-top:6px;font-weight:900;color:#a87900;}
-  .goldemoji{filter:sepia(1) saturate(4) hue-rotate(-18deg) brightness(1.25) drop-shadow(0 0 12px rgba(245,197,24,.9));}
+  .btn.big{font-size:clamp(22px,6vw,28px);padding:15px 50px;margin-top:22px;}
+  .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 rgba(91,58,30,.4);}
+  .btn.sm{font-size:15px;padding:10px 26px;font-family:'Zen Maru Gothic',sans-serif;font-weight:900;}
 
-  #over{background:rgba(74,44,23,.45);backdrop-filter:blur(3px);}
-  #over .panel,#trophy .panel{
-    background:var(--cream);border:3px solid var(--ink);border-radius:28px;
-    padding:34px 44px;box-shadow:0 10px 0 rgba(74,44,23,.5), 0 24px 50px rgba(0,0,0,.35);
-    transform:rotate(-1deg);max-width:92vw;
+  /* ============ PLAY ============ */
+  .topbar{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 8px;
   }
-  .overtitle{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(30px,7vw,52px);color:#d34f2e;
-    text-shadow:0 3px 0 var(--ink);transform:rotate(-2deg);}
-  .score{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(40px,9vw,72px);color:#a4652f;margin:8px 0 0;
-    text-shadow:0 3px 0 var(--ink);}
-  .score small{font-size:.4em;}
+  .meal-tag{display:flex;align-items:center;gap:9px;}
+  .meal-tag .icon{font-size:26px;}
+  .meal-tag .t1{font-family:'Mochiy Pop One',sans-serif;font-size:17px;line-height:1;color:#5b3a1e;}
+  .meal-tag .t2{font-size:11px;font-weight:700;color:#9a7a55;margin-top:3px;}
+  .dots{display:flex;gap:5px;margin-top:5px;}
+  .dots i{width:8px;height:8px;border-radius:50%;background:#e3cfac;}
+  .dots i.done{background:var(--good);}
+  .dots i.now{background:var(--accent);transform:scale(1.3);}
+  .iconbtn{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);background:rgba(255,255,255,.8);
+    font-size:17px;cursor:pointer;box-shadow:0 3px 0 rgba(91,58,30,.28);}
 
-  #trophy{background:rgba(40,25,5,.55);backdrop-filter:blur(4px);}
-  #trophy .panel{background:linear-gradient(165deg,#fff8dc,#ffe9a0 60%,#ffd75e);}
-  .trophytitle{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(26px,6vw,44px);color:#a87900;
-    text-shadow:0 2px 0 #fff, 0 4px 0 rgba(120,80,0,.4);}
-  .goldpoop{font-size:clamp(80px,22vw,150px);line-height:1.1;display:block;margin:8px 0;
-    animation:shine 2.2s ease-in-out infinite;}
-  @keyframes shine{0%,100%{transform:scale(1) rotate(-3deg);}50%{transform:scale(1.07) rotate(3deg);}}
-  .confetti{position:absolute;top:-12px;font-size:22px;animation:fall linear infinite;}
+  /* belly scene */
+  .scene{flex:0 0 auto;position:relative;display:flex;align-items:center;justify-content:center;padding:4px 0 0;}
+  .scene svg{width:min(78%,300px);height:auto;display:block;}
+  .gain-pop{position:absolute;font-weight:900;font-size:15px;pointer-events:none;white-space:nowrap;
+    text-shadow:0 1px 2px rgba(255,255,255,.8);}
+  @keyframes floatup{0%{opacity:0;transform:translateY(6px) scale(.8);}20%{opacity:1;transform:translateY(0) scale(1);}
+    100%{opacity:0;transform:translateY(-46px) scale(1);}}
+  .grow-comment{text-align:center;font-weight:900;font-size:13px;color:#a4652f;min-height:18px;margin-top:-4px;}
+
+  /* meters */
+  .meters{flex:0 0 auto;padding:6px 16px 4px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 10px;}
+  .meter{display:flex;flex-direction:column;gap:3px;}
+  .meter .ml{display:flex;justify-content:space-between;font-size:10.5px;font-weight:900;color:#7a5a38;}
+  .meter .bar{height:8px;border-radius:99px;background:#ecdcc0;overflow:hidden;}
+  .meter .fill{height:100%;width:0%;border-radius:99px;transition:width .4s cubic-bezier(.2,1,.3,1);}
+  .meter.good .fill{background:linear-gradient(90deg,#9ad36f,#6bb84a);}
+  .meter.warn .fill{background:linear-gradient(90deg,#ffc06b,#ff7a4d);}
+
+  /* menu */
+  .menu-wrap{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;
+    background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.55));
+    border-top-left-radius:26px;border-top-right-radius:26px;margin-top:4px;
+    box-shadow:0 -6px 20px rgba(91,58,30,.08);}
+  .menu-head{text-align:center;font-family:'Mochiy Pop One',sans-serif;font-size:15px;color:#5b3a1e;padding:12px 0 2px;}
+  .menu-head span{font-size:11px;font-weight:700;color:#9a7a55;font-family:'Zen Maru Gothic',sans-serif;}
+  .menu{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px calc(env(safe-area-inset-bottom,0px) + 16px);}
+  .food{
+    cursor:pointer;background:var(--paper);border:2.5px solid #e6d4b3;border-radius:18px;
+    padding:11px 8px 9px;text-align:center;position:relative;transition:transform .1s, box-shadow .1s, border-color .1s;
+    box-shadow:0 4px 0 #e3cfac;
+  }
+  .food:active{transform:translateY(3px);box-shadow:0 1px 0 #e3cfac;}
+  .food .emo{font-size:34px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.12));}
+  .food .nm{font-weight:900;font-size:13px;margin-top:5px;color:#5b3a1e;}
+  .food .tags{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;margin-top:6px;min-height:16px;}
+  .tg{font-size:9.5px;font-weight:900;padding:1px 6px;border-radius:99px;line-height:1.5;}
+  .tg.g{background:#e4f5d6;color:#4f8f2e;}
+  .tg.w{background:#ffe2d3;color:#d2622f;}
+
+  /* ============ DAY INTERIM ============ */
+  #screen-day,#screen-final{align-items:center;justify-content:center;text-align:center;padding:28px 22px;overflow-y:auto;}
+  .day-title{font-family:'Mochiy Pop One',sans-serif;font-size:22px;color:#a4652f;text-shadow:0 2px 0 #5b3a1e;}
+  .toilet{font-size:84px;margin:6px 0;animation:bob 2.2s ease-in-out infinite;}
+  .day-poop{margin:6px auto;}
+  .verdict{font-family:'Mochiy Pop One',sans-serif;font-size:20px;margin:8px 0 2px;}
+  .verdict-sub{font-weight:700;font-size:13px;color:#6b4a2c;line-height:1.8;max-width:300px;margin:0 auto;}
+
+  /* ============ FINAL ============ */
+  .final-poop{margin:2px auto 2px;position:relative;}
+  .crown{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:40px;
+    filter:drop-shadow(0 3px 4px rgba(180,130,0,.5));animation:bob 2.6s ease-in-out infinite;}
+  .rank-title{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(22px,7vw,30px);margin:4px 0 0;}
+  .bristol-badge{display:inline-block;font-weight:900;font-size:13px;background:#fff;border:2px solid var(--ink);
+    border-radius:999px;padding:5px 16px;margin:8px 0 4px;box-shadow:0 3px 0 rgba(91,58,30,.22);}
+  .total{font-family:'Mochiy Pop One',sans-serif;font-size:54px;line-height:1;color:#a4652f;text-shadow:0 3px 0 #5b3a1e;margin-top:6px;}
+  .total small{font-size:.34em;color:#9a7a55;}
+  .bars{width:100%;max-width:330px;margin:14px auto 4px;display:flex;flex-direction:column;gap:8px;}
+  .scbar{display:flex;align-items:center;gap:8px;}
+  .scbar .lab{flex:0 0 56px;text-align:right;font-weight:900;font-size:12px;color:#7a5a38;}
+  .scbar .track{flex:1;height:13px;border-radius:99px;background:#ecdcc0;overflow:hidden;}
+  .scbar .v{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#ffd36b,#ff8a4d);
+    transition:width .8s cubic-bezier(.2,1,.3,1);}
+  .scbar .num{flex:0 0 30px;text-align:left;font-weight:900;font-size:12px;color:#a4652f;}
+
+  /* ranking */
+  .rank-box{width:100%;max-width:340px;margin:16px auto 0;background:#fff;border:3px solid var(--ink);
+    border-radius:20px;padding:14px;box-shadow:0 6px 0 rgba(91,58,30,.3);}
+  .world{font-family:'Mochiy Pop One',sans-serif;font-size:17px;color:#5b3a1e;line-height:1.4;}
+  .world b{color:#d2622f;font-size:1.3em;}
+  .world .pct{font-size:12px;font-weight:700;color:#9a7a55;font-family:'Zen Maru Gothic',sans-serif;}
+  .lb{margin-top:12px;display:flex;flex-direction:column;gap:4px;}
+  .lb .row{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;padding:5px 9px;border-radius:10px;background:#fbf2dd;}
+  .lb .row .rk{flex:0 0 30px;font-weight:900;color:#a87900;}
+  .lb .row .nm{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb .row .sc{font-weight:900;color:#a4652f;}
+  .lb .row.me{background:linear-gradient(90deg,#fff0c2,#ffe39a);border:2px solid #e8c14a;}
+  .lb .ellip{text-align:center;color:#c2a888;font-weight:900;letter-spacing:2px;}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px;padding-bottom:10px;}
+
+  .spark{position:absolute;pointer-events:none;font-size:18px;animation:sparkle 1.6s ease-in-out infinite;}
+  @keyframes sparkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:1;transform:scale(1.1);}}
+  .confetti{position:fixed;top:-20px;font-size:20px;animation:fall linear infinite;z-index:50;pointer-events:none;}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
 
-  .hint{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);font-weight:900;
-    font-size:clamp(12px,2.6vw,15px);color:#fff;text-shadow:0 2px 0 var(--ink);
-    pointer-events:none;opacity:.95;animation:bounce 1.4s ease-in-out infinite;z-index:5;display:none;}
-  @keyframes bounce{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,-7px);}}
+  .eat-flash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 60%);
+    opacity:0;pointer-events:none;}
+  .eat-flash.go{animation:flash .4s ease;}
+  @keyframes flash{0%{opacity:0;}40%{opacity:.9;}100%{opacity:0;}}
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
+<div id="app">
 
-<div id="hud">
-  <div id="lives"></div>
-  <div id="count">0<small>こ</small></div>
-  <div id="tier">うんこ</div>
-  <div id="windbox">
-    <div class="lbl">かぜ</div>
-    <div id="windarrow">─</div>
-    <div id="windbar"><div id="windfill"></div></div>
-  </div>
-  <div id="nextwrap">
-    <div id="nextbar"><div id="nextfill"></div></div>
-    <div id="nextlbl">いろチェンジまで あと100こ</div>
-  </div>
-  <div id="balwrap">
-    <div class="lbl">バランス</div>
-    <div id="balbar"><div id="baldot"></div></div>
-  </div>
-  <div id="toast"></div>
-</div>
+  <!-- TITLE -->
+  <section id="screen-title" class="screen active">
+    <div class="logo">うんこ道<span class="sub">〜 めざせ 世界一の 黄金便 〜</span></div>
+    <div class="title-poop">💩</div>
+    <div class="pitch">
+      1日3食、食べるものはキミ次第。<br>
+      腸の中で <b>うんこを育てて</b>、<br>
+      その<b>美しさ</b>で <b>世界ランキング</b>に挑戦！<br>
+      めざすは つるんと輝く <b>黄金バナナ便</b>✨
+    </div>
+    <div class="best-badge" id="bestBadge" style="display:none"></div>
+    <button class="btn big" id="startBtn">いただきます！</button>
+    <button class="btn sm ghost" id="howBtn" style="margin-top:14px">あそびかた</button>
+  </section>
 
-<div class="hint" id="hint">タップで おとす！</div>
-<button id="mute" title="サウンド">🔊</button>
+  <!-- PLAY -->
+  <section id="screen-play" class="screen">
+    <div class="topbar">
+      <div class="meal-tag">
+        <div class="icon" id="mealIcon">🌅</div>
+        <div>
+          <div class="t1" id="mealTitle">1日目・朝食</div>
+          <div class="t2" id="mealSub">何を食べる？</div>
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+      <button class="iconbtn" id="muteBtn">🔊</button>
+    </div>
 
-<div id="title" class="ov">
-  <div class="bigtitle">うんこ<br>タワー<span class="y2">〜 めざせ 1000だん 〜</span></div>
-  <div class="subtitle">💩 バランスよく つみあげろ！ 💩</div>
-  <div class="rules">
-    タップ / スペースキーで うんこを落とす<br>
-    100こ ごとに うんこが しんかする！<br>
-    高くなるほど 風がふいて グラグラ…
-  </div>
-  <button class="btn" id="startbtn">スタート！</button>
-  <div class="best" id="titlebest"></div>
-  <div class="trophy-mini hidden" id="titletrophy">🏆 ゴールデンうんこ かくとくずみ <span class="goldemoji">💩</span></div>
-</div>
+    <div class="scene">
+      <div id="bellyHolder"></div>
+      <div class="eat-flash" id="eatFlash"></div>
+    </div>
+    <div class="grow-comment" id="growComment">うんこの たね が できた</div>
 
-<div id="over" class="ov hidden">
-  <div class="panel">
-    <div class="overtitle" id="overtitle">どしゃー！！</div>
-    <div class="score"><span id="overcount">0</span><small> こ</small></div>
-    <div class="best" id="overbest"></div>
-    <div class="best" id="overtier"></div>
-    <button class="btn" id="retrybtn">もういっかい！</button>
-  </div>
-</div>
+    <div class="meters" id="meters"></div>
 
-<div id="trophy" class="ov hidden">
-  <div class="panel">
-    <div class="trophytitle">🏆 でんせつたっせい 🏆</div>
-    <span class="goldpoop goldemoji">💩</span>
-    <div class="trophytitle" style="font-size:clamp(20px,4.5vw,30px)">ゴールデンうんこ<br>トロフィー かくとく！！</div>
-    <div class="best">1000こ つみあげた きみは うんこの かみさま</div>
-    <button class="btn" id="contbtn">つみつづける</button>
-  </div>
+    <div class="menu-wrap">
+      <div class="menu-head">メニューをえらぶ <span>（タップで決定）</span></div>
+      <div class="menu" id="menu"></div>
+    </div>
+  </section>
+
+  <!-- DAY INTERIM -->
+  <section id="screen-day" class="screen">
+    <div class="day-title" id="dayTitle">1日目 おわり</div>
+    <div class="toilet">🚽</div>
+    <div class="day-poop" id="dayPoop"></div>
+    <div class="verdict" id="dayVerdict"></div>
+    <div class="verdict-sub" id="dayVerdictSub"></div>
+    <button class="btn big" id="nextDayBtn">つぎの日へ</button>
+  </section>
+
+  <!-- FINAL -->
+  <section id="screen-final" class="screen">
+    <div class="day-title">🏁 3日間の せいか 🏁</div>
+    <div class="final-poop" id="finalPoop"></div>
+    <div class="rank-title" id="rankTitle">健康なバナナ便</div>
+    <div class="bristol-badge" id="bristolBadge"></div>
+    <div class="total" id="totalScore">0<small>点</small></div>
+    <div class="bars" id="finalBars"></div>
+    <div class="rank-box">
+      <div class="world" id="worldRank"></div>
+      <div class="lb" id="leaderboard"></div>
+    </div>
+    <div class="btns">
+      <button class="btn sm" id="shareBtn">結果をシェア</button>
+      <button class="btn sm ghost" id="retryBtn">もう一度</button>
+    </div>
+  </section>
+
 </div>
 
 <script>
 'use strict';
-/* ================= うんこタワー ================= */
-const cv = document.getElementById('c'), ctx = cv.getContext('2d');
-let W=0, H=0, DPR=1;
-function resize(){
-  DPR = Math.min(2, window.devicePixelRatio||1);
-  W = window.innerWidth; H = window.innerHeight;
-  cv.width = W*DPR; cv.height = H*DPR;
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-}
-window.addEventListener('resize', resize); resize();
+const $=id=>document.getElementById(id);
+const screens=['title','play','day','final'];
+function show(name){ screens.forEach(s=>$('screen-'+s).classList.toggle('active', s===name)); }
 
-/* ---------- tiers (100こごとに進化) ---------- */
-const TIERS = [
-  {name:'うんこ',           c:'#9b6b3f'},
-  {name:'まっちゃうんこ',   c:'#7daa3c'},
-  {name:'ソーダうんこ',     c:'#3fa7d6'},
-  {name:'さくらうんこ',     c:'#f48fb1'},
-  {name:'マグマうんこ',     c:'#e25822'},
-  {name:'どくうんこ',       c:'#8e44ad'},
-  {name:'ゆきうんこ',       c:'#e8ecf1'},
-  {name:'やみうんこ',       c:'#46394f'},
-  {name:'にじうんこ',       c:'rainbow'},
-  {name:'プラチナうんこ',   c:'#c3ccd6'},
-  {name:'ゴールデンうんこ', c:'#f5c518'},
-];
-function hexMix(hex, t, to){ // to: 0=black 1=white
-  const n=parseInt(hex.slice(1),16);
-  let r=n>>16, g=(n>>8)&255, b=n&255;
-  const T = to? 255:0;
-  r=Math.round(r+(T-r)*t); g=Math.round(g+(T-g)*t); b=Math.round(b+(T-b)*t);
-  return `rgb(${r},${g},${b})`;
-}
-function tierColors(tier, idx, t){
-  const def = TIERS[Math.min(tier, TIERS.length-1)];
-  if(def.c==='rainbow'){
-    const h=(idx*24 + t*50)%360;
-    return {base:`hsl(${h},72%,56%)`, dark:`hsl(${h},72%,34%)`, light:`hsl(${h},80%,76%)`};
-  }
-  if(tier>=10){ // golden
-    return {base:'#f5c518', dark:'#a87900', light:'#fff3b0'};
-  }
-  return {base:def.c, dark:hexMix(def.c,.45,0), light:hexMix(def.c,.45,1)};
-}
-
-/* ---------- sound (tiny synth) ---------- */
+/* ---------- sound ---------- */
 let AC=null, muted=false;
-function ac(){ if(!AC) AC = new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
-function beep(f, dur=0.1, type='square', vol=0.12, slide=0){
-  if(muted) return;
-  try{
-    const a=ac(), o=a.createOscillator(), g=a.createGain();
-    o.type=type; o.frequency.setValueAtTime(f, a.currentTime);
-    if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide), a.currentTime+dur);
-    g.gain.setValueAtTime(vol, a.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, a.currentTime+dur);
-    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime+dur+0.02);
-  }catch(e){}
+function ac(){ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
+function beep(f,dur=.1,type='sine',vol=.1,slide=0){
+  if(muted)return;
+  try{const a=ac(),o=a.createOscillator(),g=a.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,a.currentTime);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+slide),a.currentTime+dur);
+  g.gain.setValueAtTime(vol,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);
+  o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+dur+.02);}catch(e){}
 }
-const S = {
-  land   : ()=>beep(170,.09,'square',.13,-60),
-  perfect: ()=>{beep(660,.09,'sine',.15); setTimeout(()=>beep(990,.12,'sine',.13),70);},
-  miss   : ()=>beep(160,.3,'sawtooth',.14,-120),
-  level  : ()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.12,'triangle',.14),i*90));},
-  topple : ()=>beep(90,.6,'sawtooth',.18,-60),
-  trophy : ()=>{[523,659,784,1046,1318,1568].forEach((f,i)=>setTimeout(()=>beep(f,.18,'triangle',.15),i*120));},
+const SND={
+  eat:()=>{beep(520,.07,'triangle',.12);setTimeout(()=>beep(700,.09,'triangle',.1),70);},
+  good:()=>{beep(660,.09,'sine',.12);setTimeout(()=>beep(990,.12,'sine',.1),80);},
+  bad:()=>beep(200,.22,'sawtooth',.1,-80),
+  day:()=>[523,659,784].forEach((f,i)=>setTimeout(()=>beep(f,.12,'triangle',.11),i*90)),
+  win:()=>[523,659,784,1046,1318,1568].forEach((f,i)=>setTimeout(()=>beep(f,.18,'triangle',.12),i*110)),
 };
-document.getElementById('mute').addEventListener('click', e=>{
-  muted=!muted; e.target.textContent = muted?'🔇':'🔊'; e.stopPropagation();
-});
+$('muteBtn').addEventListener('click',e=>{muted=!muted;e.target.textContent=muted?'🔇':'🔊';});
+
+/* ---------- food data ----------
+   stats: fiber 食物繊維 / water 水分 / prob 善玉菌 / fat 脂質 / sugar 糖分 / irrit 刺激
+   tags shown to player as hints */
+function F(name,emo,s){ return {name,emo,s:Object.assign({fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0},s)}; }
+const MENUS = {
+  morning:[
+    F('納豆ごはん','🫘',{fiber:2,prob:3}),
+    F('ヨーグルト','🥣',{prob:3,water:1,sugar:1}),
+    F('バナナ','🍌',{fiber:2,sugar:1,water:1}),
+    F('わかめ味噌汁','🍲',{prob:2,water:2,fiber:1}),
+    F('焼きたてパン','🥐',{fat:2,sugar:2}),
+    F('ベーコンエッグ','🍳',{fat:3,prob:0}),
+    F('グラノーラ','🥗',{fiber:2,sugar:2}),
+    F('コーヒー','☕',{irrit:2}),
+  ],
+  noon:[
+    F('野菜たっぷり定食','🥗',{fiber:3,water:1,prob:1}),
+    F('焼き魚定食','🐟',{prob:1,fiber:1,fat:1,water:1}),
+    F('さつまいも','🍠',{fiber:3,sugar:1}),
+    F('こってりラーメン','🍜',{fat:3,sugar:1,water:1,irrit:1}),
+    F('からあげ弁当','🍗',{fat:3,sugar:1}),
+    F('ピザ','🍕',{fat:3,sugar:1}),
+    F('激辛カレー','🍛',{irrit:3,fat:1}),
+    F('きのこソテー','🍄',{fiber:3}),
+  ],
+  night:[
+    F('湯豆腐と小鉢','🍲',{prob:2,fiber:1,water:2}),
+    F('キムチ鍋','🌶️',{prob:2,fiber:2,water:2,irrit:1}),
+    F('ひじきと玄米','🌿',{fiber:3,prob:1}),
+    F('焼肉ガッツリ','🍖',{fat:3}),
+    F('ポテトとビール','🍟',{fat:2,sugar:1,irrit:2,water:1}),
+    F('ショートケーキ','🍰',{sugar:3,fat:1}),
+    F('チョコアイス','🍦',{sugar:3,fat:1}),
+    F('お水ごくごく','💧',{water:3}),
+  ],
+};
+const SLOTS=[
+  {key:'morning',icon:'🌅',label:'朝食',sub:'今日の朝ごはんは？'},
+  {key:'noon',   icon:'☀️',label:'昼食',sub:'ランチタイム！'},
+  {key:'night',  icon:'🌙',label:'夕食',sub:'1日のしめは？'},
+];
+const STAT_INFO={
+  fiber:{n:'食物繊維',cls:'good'}, water:{n:'水分',cls:'good'}, prob:{n:'善玉菌',cls:'good'},
+  fat:{n:'脂質',cls:'warn'}, sugar:{n:'糖分',cls:'warn'}, irrit:{n:'刺激物',cls:'warn'},
+};
 
 /* ---------- game state ---------- */
-const PW = 92;          // poop width
-const PH = 34;          // vertical spacing per poop
-const BAL_LIMIT = 26;   // lean limit before topple
-const G = {
-  state:'title',        // title | play | topple | over | trophy
-  stack:[],             // {x, tier}
-  falling:null,         // {x,y,vx,vy,rot}
-  count:0, lives:3,
-  inst:0,               // instability (lean)
-  wind:0, windTarget:0, windTimer:0,
-  camY:0, camX:0,
-  t:0,
-  dropPhase:0,
-  parts:[],             // particles (topple / confetti)
-  shake:0,
-  faceTimer:0,
-  best:+(localStorage.getItem('unkoBest')||0),
-  gold:localStorage.getItem('unkoGold')==='1',
-  trophyShown:false,
-};
+const TOTAL_DAYS=3;
+let G;
+function newGame(){
+  G={ day:0, slot:0, mealCount:0,
+      sum:{fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0} };
+}
+function avg(){ const m=Math.max(1,G.mealCount),a={};for(const k in G.sum)a[k]=G.sum[k]/m;return a; }
 
-/* ---------- HUD refs ---------- */
-const $ = id=>document.getElementById(id);
-const hud=$('hud'), elCount=$('count'), elTier=$('tier'), elLives=$('lives'),
-  elWindArrow=$('windarrow'), elWindFill=$('windfill'), elBalDot=$('baldot'),
-  elNextFill=$('nextfill'), elNextLbl=$('nextlbl'), elToast=$('toast'), elHint=$('hint');
-
-function toast(msg, color){
-  elToast.textContent=msg;
-  if(color) elToast.style.color=color; else elToast.style.color='#fff';
-  elToast.classList.remove('pop'); void elToast.offsetWidth; elToast.classList.add('pop');
+/* ---------- result math ---------- */
+function computeResult(useCount){
+  const m=Math.max(1, useCount!=null?useCount:G.mealCount);
+  const a={};for(const k in G.sum)a[k]=G.sum[k]/m;
+  const dryness  = Math.max(0,1.6-a.water)*1.3 + Math.max(0,1.4-a.fiber)*1.0;
+  const looseness= a.fat*0.7 + a.sugar*0.55 + a.irrit*1.1 + Math.max(0,(a.water-2.6)-a.fiber*0.4)*0.8;
+  const net=looseness-dryness;
+  const bristol=Math.min(7,Math.max(1, 4+net*1.3));
+  const clamp=v=>Math.max(0,Math.min(100,v));
+  const shape=clamp(100-Math.abs(bristol-4)*24 - Math.max(0,1.2-a.fiber)*22);
+  const color=clamp(60+a.prob*16 - a.fat*10 - a.sugar*12 + a.fiber*4);
+  const luster=clamp(55+a.water*16 - Math.abs(bristol-4)*10 - a.fat*6);
+  const smell=clamp(70+a.prob*12 - a.fat*14 - a.sugar*10 - a.irrit*12);
+  const ease=clamp(70+a.fiber*8 + a.water*8 - Math.abs(bristol-4)*16 - a.irrit*8);
+  let total=shape*.25+color*.20+luster*.15+smell*.20+ease*.20;
+  total-=Math.max(0,(a.fat+a.sugar)-2)*6;     // 悪玉菌ペナルティ
+  total=Math.round(clamp(total));
+  return {a,bristol,btype:Math.round(bristol),
+          dims:{形:Math.round(shape),色:Math.round(color),ツヤ:Math.round(luster),香り:Math.round(smell),快便:Math.round(ease)},
+          total};
 }
-function updateHUD(){
-  elCount.innerHTML = G.count + '<small>こ</small>';
-  const tier = Math.min(Math.floor(G.count/100), TIERS.length-1);
-  elTier.textContent = TIERS[tier].name;
-  elLives.innerHTML = [0,1,2].map(i=>`<span class="${i<G.lives?'':'lost'}">💩</span>`).join('');
-  const toNext = G.count>=1000 ? 0 : 100-(G.count%100);
-  elNextFill.style.width = (G.count>=1000?100:(G.count%100))+'%';
-  elNextLbl.textContent = G.count>=1000 ? 'ゴールデンモード！' : (G.count>=900? `トロフィーまで あと${1000-G.count}こ` : `いろチェンジまで あと${toNext}こ`);
-  // balance dot
-  const p = Math.max(-1, Math.min(1, G.inst/BAL_LIMIT));
-  elBalDot.style.left = `calc(50% + ${p*46}% - 7px)`;
-  elBalDot.style.background = Math.abs(p)>0.72 ? '#d8432e' : Math.abs(p)>0.45 ? '#f0a322' : '#5cb85c';
-}
-
-/* ---------- difficulty ---------- */
-function windMax(){ const c=G.count; if(c<15) return 0; return Math.min(1, (c-15)/220) * (0.4 + Math.min(0.6, c/900)); }
-function swayAmp(){ return Math.min(42, 2 + G.count*0.12) + Math.abs(G.wind)*26; }
-function swaySpeed(){ return 0.9 + Math.min(1.7, G.count/240); }
-function dropSpeed(){ return 1.25 + Math.min(2.3, G.count/170); }
-function dropRange(){ return Math.min(W*0.32, 120 + G.count*0.4); }
-
-/* ---------- coordinates ----------
-   world: y up from ground(0). screen: screenY = H*0.8 - (wy - camY) */
-function sy(wy){ return H*0.8 - (wy - G.camY); }
-function sx(wx){ return W/2 + (wx - G.camX); }
-function topWorldY(){ return G.stack.length*PH; }
-function swayAt(i){
-  const n = Math.max(1,G.stack.length);
-  const f = Math.pow(i/n, 1.4);
-  return Math.sin(G.t*swaySpeed() + i*0.07)*swayAmp()*f + G.inst*2.2*f;
-}
-function effX(i){ return G.stack[i].x + swayAt(i+1); }
-function topEffX(){ return G.stack.length? effX(G.stack.length-1) : 0; }
-
-/* ---------- core actions ---------- */
-function reset(){
-  G.stack=[{x:0,tier:0}]; G.count=1; G.lives=3; G.inst=0;
-  G.wind=0; G.windTarget=0; G.windTimer=0;
-  G.camY=0; G.camX=0; G.falling=null; G.parts=[]; G.shake=0;
-  G.dropPhase=Math.random()*6; G.trophyShown=false;
-  updateHUD();
-}
-function startGame(){
-  reset();
-  G.state='play';
-  $('title').classList.add('hidden'); $('over').classList.add('hidden'); $('trophy').classList.add('hidden');
-  hud.style.display='block'; elHint.style.display='block';
-  setTimeout(()=>elHint.style.display='none', 3500);
-}
-function dropperX(){ return G.camX + Math.sin(G.t*dropSpeed()+G.dropPhase)*dropRange(); }
-
-function doDrop(){
-  if(G.state!=='play' || G.falling) return;
-  const tier = Math.min(Math.floor(G.count/100), TIERS.length-1);
-  G.falling = { x:dropperX(), y:topWorldY()+300, vx:0, vy:0, rot:(Math.random()-.5)*0.2, tier };
-  beep(420,.06,'sine',.08,180);
-}
-
-function land(offset){ // offset px from top center — also exposed for tests
-  const W2 = PW*0.46;
-  if(Math.abs(offset) > W2){ return miss(); }
-  const perfect = Math.abs(offset) < PW*0.13;
-  const topX = G.stack[G.stack.length-1].x;
-  const tier = Math.min(Math.floor(G.count/100), TIERS.length-1);
-  G.stack.push({x: topX + offset*0.92, tier});
-  G.count++;
-  G.inst += (offset/PW)*13;
-  if(perfect){
-    G.inst *= 0.45;
-    toast(['ピタッ！','ナイス💩！','うますぎ！','てんさい！'][Math.floor(Math.random()*4)], '#ffe24a');
-    S.perfect();
-  } else {
-    S.land();
-  }
-  // milestone
-  if(G.count%100===0 && G.count<1000){
-    const t2 = Math.min(Math.floor(G.count/100), TIERS.length-1);
-    toast(`✨ ${TIERS[t2].name} に しんか！ ✨`);
-    S.level(); G.shake=8;
-  }
-  if(G.count>=1000 && !G.trophyShown){
-    G.trophyShown=true;
-    G.gold=true; localStorage.setItem('unkoGold','1');
-    winTrophy();
-  }
-  if(Math.abs(G.inst) > BAL_LIMIT){ topple(); }
-  saveBest(); updateHUD();
-}
-function miss(){
-  G.lives--;
-  S.miss(); G.shake=10;
-  toast('あぶない！','#ff6b5e');
-  // falling poop tumbles away as particle
-  if(G.falling){
-    G.parts.push({x:G.falling.x, y:G.falling.y, vx:(G.falling.x>topEffX()?1:-1)*(120+Math.random()*120), vy:160, rot:0, vr:(Math.random()-.5)*9, tier:G.falling.tier, life:2});
-  }
-  updateHUD();
-  if(G.lives<=0){ topple(); }
-}
-function topple(){
-  if(G.state!=='play') return;
-  G.state='topple'; S.topple(); G.shake=16;
-  const n=G.stack.length;
-  const burst=Math.min(16,n);
-  for(let i=n-burst;i<n;i++){
-    const p=G.stack[i];
-    G.parts.push({x:p.x+swayAt(i+1), y:i*PH, vx:(Math.random()-.5)*420 + G.inst*9, vy:120+Math.random()*260, rot:0, vr:(Math.random()-.5)*12, tier:p.tier, life:2.2});
-  }
-  G.stack.length = Math.max(0, n-burst);
-  setTimeout(showOver, 1500);
-}
-function saveBest(){ if(G.count>G.best){ G.best=G.count; localStorage.setItem('unkoBest',G.best); } }
-function showOver(){
-  G.state='over'; saveBest();
-  $('overcount').textContent=G.count;
-  $('overbest').textContent=`さいこうきろく：${G.best}こ`;
-  const tier = Math.min(Math.floor(G.count/100), TIERS.length-1);
-  $('overtier').textContent=`とうたつ：${TIERS[tier].name}`;
-  $('overtitle').textContent = G.count>=500?'おしい〜！！':'どしゃー！！';
-  $('over').classList.remove('hidden');
-}
-function winTrophy(){
-  G.state='trophy'; saveBest(); S.trophy();
-  const ov=$('trophy');
-  // confetti
-  for(let i=0;i<24;i++){
-    const sp=document.createElement('span');
-    sp.className='confetti'; sp.textContent=['✨','🎉','💛','⭐','💩'][i%5];
-    sp.style.left=(Math.random()*100)+'vw';
-    sp.style.animationDuration=(2.5+Math.random()*3)+'s';
-    sp.style.animationDelay=(Math.random()*2)+'s';
-    ov.appendChild(sp);
-  }
-  ov.classList.remove('hidden');
-}
-
-/* ---------- input ---------- */
-cv.addEventListener('pointerdown', ()=>{ ac(); doDrop(); });
-window.addEventListener('keydown', e=>{
-  if(e.code==='Space'){ e.preventDefault(); ac();
-    if(G.state==='play') doDrop();
-  }
-});
-$('startbtn').addEventListener('click', ()=>{ ac(); startGame(); });
-$('retrybtn').addEventListener('click', ()=>{ ac(); startGame(); });
-$('contbtn').addEventListener('click', ()=>{ $('trophy').classList.add('hidden'); G.state='play'; });
-
-/* ---------- drawing ---------- */
-function drawPoop(x, y, w, cols, opts={}){
-  // y = bottom center, draws swirl poop of width w
-  const {face=false, mood='happy', rot=0} = opts;
-  ctx.save(); ctx.translate(x,y); if(rot) ctx.rotate(rot);
-  ctx.lineWidth = Math.max(2, w*0.04);
-  ctx.strokeStyle = cols.dark;
-  const layers=[
-    {rx:w*0.50, ry:w*0.205, cy:-w*0.155},
-    {rx:w*0.375,ry:w*0.175, cy:-w*0.40},
-    {rx:w*0.26, ry:w*0.14,  cy:-w*0.60},
-  ];
-  for(const L of layers){
-    ctx.beginPath(); ctx.ellipse(0,L.cy,L.rx,L.ry,0,0,Math.PI*2);
-    ctx.fillStyle=cols.base; ctx.fill(); ctx.stroke();
-    // highlight
-    ctx.beginPath(); ctx.ellipse(-L.rx*0.42, L.cy-L.ry*0.32, L.rx*0.28, L.ry*0.3, -0.4, 0, Math.PI*2);
-    ctx.fillStyle=cols.light; ctx.globalAlpha=.55; ctx.fill(); ctx.globalAlpha=1;
-  }
-  // tip curl
-  ctx.beginPath();
-  ctx.moveTo(-w*0.08, -w*0.70);
-  ctx.quadraticCurveTo(-w*0.02, -w*0.86, w*0.10, -w*0.78);
-  ctx.quadraticCurveTo(w*0.16, -w*0.73, w*0.06, -w*0.68);
-  ctx.closePath(); ctx.fillStyle=cols.base; ctx.fill(); ctx.stroke();
-  if(face){
-    const ey=-w*0.40;
-    ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.ellipse(-w*0.13,ey,w*0.075,w*0.085,0,0,7); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( w*0.13,ey,w*0.075,w*0.085,0,0,7); ctx.fill();
-    ctx.fillStyle='#3a2412';
-    const px = mood==='worried'? Math.sin(G.t*9)*w*0.02 : 0;
-    ctx.beginPath(); ctx.arc(-w*0.13+px,ey+w*0.012,w*0.035,0,7); ctx.fill();
-    ctx.beginPath(); ctx.arc( w*0.13+px,ey+w*0.012,w*0.035,0,7); ctx.fill();
-    ctx.strokeStyle='#3a2412'; ctx.lineWidth=Math.max(1.5,w*0.025); ctx.lineCap='round';
-    ctx.beginPath();
-    if(mood==='worried'){ ctx.arc(0,ey+w*0.20,w*0.07,Math.PI*1.15,Math.PI*1.85); }
-    else { ctx.arc(0,ey+w*0.10,w*0.09,Math.PI*0.15,Math.PI*0.85); }
-    ctx.stroke();
-    // cheeks
-    ctx.fillStyle='rgba(255,120,120,.35)';
-    ctx.beginPath(); ctx.ellipse(-w*0.25,ey+w*0.09,w*0.05,w*0.03,0,0,7); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( w*0.25,ey+w*0.09,w*0.05,w*0.03,0,0,7); ctx.fill();
-  }
-  ctx.restore();
-}
-
-/* sky palette keyframes by altitude */
-const SKY=[
-  {a:0,     top:[174,227,255], bot:[255,233,199]},
-  {a:5000,  top:[255,166,128], bot:[255,224,170]},
-  {a:12000, top:[58,52,110],   bot:[150,110,160]},
-  {a:24000, top:[8,8,30],      bot:[40,35,80]},
+const BRISTOL=[
+  null,
+  {n:'コロコロ便',d:'カチカチの便秘…水分と繊維がぜんぜん足りないよ💦'},
+  {n:'ゴツゴツ便',d:'かたくて出にくい便秘ぎみ。野菜とお水をもっと！'},
+  {n:'ひび割れバナナ',d:'おしい！あと少し水分があればツルッといけた。'},
+  {n:'つるんバナナ便',d:'理想形！するっと快便、最高の腸内環境✨'},
+  {n:'やわらかバナナ',d:'やや柔らかめ。健康的だけどあと一歩。'},
+  {n:'どろどろ軟便',d:'脂質や刺激物が多すぎたかも…お腹ゆるゆる。'},
+  {n:'みずみず下痢便',d:'これは大惨事！刺激物と脂で腸が大暴れ🚽'},
 ];
-function lerpC(a,b,t){ return a.map((v,i)=>Math.round(v+(b[i]-v)*t)); }
-function skyColors(alt){
-  let i=0; while(i<SKY.length-2 && alt>SKY[i+1].a) i++;
-  const k0=SKY[i],k1=SKY[i+1];
-  const t=Math.max(0,Math.min(1,(alt-k0.a)/(k1.a-k0.a)));
-  return {top:lerpC(k0.top,k1.top,t), bot:lerpC(k0.bot,k1.bot,t), night:Math.max(0,Math.min(1,(alt-9000)/8000))};
+function rankInfo(total,btype){
+  if(total>=90) return {t:'伝説の黄金便',c:'#f5c518',emoji:'👑',crown:true};
+  if(total>=80) return {t:'ピカピカ黄金便',c:'#e0a91a',emoji:'✨',crown:true};
+  if(total>=70) return {t:'健康なバナナ便',c:'#c8861f',emoji:'🍌',crown:false};
+  if(total>=55) return {t:'まあまあ普通便',c:'#b07a3a',emoji:'🙂',crown:false};
+  if(total>=40) return {t:'ちょい不調便',c:'#a06a3a',emoji:'😅',crown:false};
+  if(btype<=2)  return {t:'コロコロ侯爵',c:'#8a6a40',emoji:'🪨',crown:false};
+  if(btype>=6)  return {t:'ゆるゆる将軍',c:'#7d6a45',emoji:'💧',crown:false};
+  return {t:'うんこ修行中',c:'#7d6a45',emoji:'💀',crown:false};
 }
-// deterministic stars
-const STARS=[]; (function(){ let s=42; const r=()=>{s=(s*16807)%2147483647; return s/2147483647;};
-  for(let i=0;i<90;i++) STARS.push({x:r(), y:r(), tw:r()*6, sz:1+r()*1.6}); })();
-const CLOUDS=[]; for(let i=0;i<6;i++) CLOUDS.push({x:Math.random()*1.2-0.1, yy:Math.random(), s:0.6+Math.random()*0.8, drift:Math.random()*20+8});
 
-function draw(dt){
-  const alt = topWorldY();
-  const sk = skyColors(alt);
-  const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,`rgb(${sk.top.join(',')})`); g.addColorStop(1,`rgb(${sk.bot.join(',')})`);
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-
-  ctx.save();
-  if(G.shake>0){ ctx.translate((Math.random()-.5)*G.shake,(Math.random()-.5)*G.shake); G.shake*=0.88; if(G.shake<0.4)G.shake=0; }
-
-  // stars
-  if(sk.night>0.05){
-    ctx.fillStyle='#fff';
-    for(const st of STARS){
-      const a = sk.night*(0.4+0.6*Math.abs(Math.sin(G.t*1.5+st.tw)));
-      ctx.globalAlpha=a; ctx.fillRect(st.x*W, st.y*H*0.8, st.sz, st.sz);
+/* ---------- poop SVG ---------- */
+function palette(res){
+  const {a,btype,dims}=res;
+  if(a.fat+a.sugar>2.3) return {base:'#5d4226',dark:'#3c2a18',light:'#7a5a38'};      // junk dark
+  if(btype>=6)          return {base:'#9c7b46',dark:'#6f562f',light:'#bb9a63'};      // muddy
+  if(btype<=2)          return {base:'#7a5631',dark:'#543a20',light:'#9b7748'};      // dry dark
+  if(dims.色>=72 && dims.ツヤ>=70) return {base:'#c08a2e',dark:'#8f6418',light:'#ecc05a'}; // golden
+  return {base:'#9b6b3f',dark:'#6e4a28',light:'#bd8e57'};                            // normal
+}
+// kawaii swirl poop. opts: pal, mood(0 sad..2 happy), shine, crown, scale, shape
+function poopSVG(opts){
+  const p=opts.pal, mood=opts.mood==null?2:opts.mood, shine=opts.shine||0, sh=opts.shape||'banana';
+  const id='g'+Math.floor((opts.seed||1)*9999);
+  const eyeY=58, mouth = mood>=2 ? `M86 ${eyeY+14} Q100 ${eyeY+26} 114 ${eyeY+14}`
+            : mood===1 ? `M88 ${eyeY+18} L112 ${eyeY+18}`
+            : `M86 ${eyeY+22} Q100 ${eyeY+10} 114 ${eyeY+22}`;
+  let body='';
+  if(sh==='pebbles'){
+    body=`
+      <ellipse cx="70" cy="150" rx="26" ry="24" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="128" cy="152" rx="24" ry="22" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="100" cy="118" rx="30" ry="27" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="100" cy="80" rx="34" ry="30" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>`;
+  } else if(sh==='mushy'){
+    body=`
+      <path d="M40 165 Q100 120 160 165 Q170 185 100 188 Q30 185 40 165Z" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="100" cy="118" rx="48" ry="38" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="100" cy="74" rx="36" ry="30" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="58" cy="178" rx="7" ry="5" fill="${p.light}" opacity=".7"/>
+      <ellipse cx="146" cy="176" rx="6" ry="4" fill="${p.light}" opacity=".7"/>`;
+  } else {
+    // banana / cracked / soft swirl (3 stacked)
+    body=`
+      <ellipse cx="100" cy="158" rx="60" ry="26" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="100" cy="120" rx="46" ry="22" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <ellipse cx="100" cy="86" rx="33" ry="18" fill="${p.base}" stroke="${p.dark}" stroke-width="4"/>
+      <path d="M88 70 Q96 50 112 58 Q122 64 112 74" fill="${p.base}" stroke="${p.dark}" stroke-width="4" stroke-linejoin="round"/>`;
+    if(sh==='cracked'){
+      body+=`<path d="M78 150 l10 -10 M110 152 l8 -9 M128 124 l9 -7" stroke="${p.dark}" stroke-width="3" stroke-linecap="round" opacity=".5"/>`;
     }
-    ctx.globalAlpha=1;
   }
-  // clouds drift with wind
-  for(const cl of CLOUDS){
-    cl.x += (G.wind*60 + cl.drift*0.15)*dt/W;
-    if(cl.x>1.25) cl.x=-0.25; if(cl.x<-0.25) cl.x=1.25;
-    const cy = (cl.yy*H*0.7 + (G.camY*0.18))%(H+120)-60;
-    ctx.globalAlpha=0.75*(1-sk.night*0.8);
-    ctx.fillStyle='#fff';
-    const cx=cl.x*W, s=cl.s;
-    ctx.beginPath();
-    ctx.ellipse(cx,cy,55*s,20*s,0,0,7); ctx.ellipse(cx+35*s,cy+6*s,38*s,16*s,0,0,7);
-    ctx.ellipse(cx-38*s,cy+7*s,34*s,14*s,0,0,7); ctx.fill();
-    ctx.globalAlpha=1;
-  }
+  // highlights
+  const hi = `
+      <ellipse cx="78" cy="${sh==='pebbles'?70:80}" rx="12" ry="7" fill="${p.light}" opacity=".55"/>
+      <ellipse cx="80" cy="${sh==='pebbles'?112:118}" rx="16" ry="8" fill="${p.light}" opacity=".45"/>`;
+  // face
+  const face=`
+      <ellipse cx="86" cy="${eyeY}" rx="7" ry="8.5" fill="#fff"/>
+      <ellipse cx="114" cy="${eyeY}" rx="7" ry="8.5" fill="#fff"/>
+      <circle cx="${87+(mood<1?-1:0)}" cy="${eyeY+1}" r="3.4" fill="#3a2412"/>
+      <circle cx="${115+(mood<1?-1:0)}" cy="${eyeY+1}" r="3.4" fill="#3a2412"/>
+      <circle cx="${85}" cy="${eyeY-2}" r="1.4" fill="#fff"/>
+      <circle cx="${113}" cy="${eyeY-2}" r="1.4" fill="#fff"/>
+      <path d="${mouth}" fill="none" stroke="#3a2412" stroke-width="3.4" stroke-linecap="round"/>
+      <ellipse cx="72" cy="${eyeY+9}" rx="6" ry="3.4" fill="#ff9a9a" opacity=".5"/>
+      <ellipse cx="128" cy="${eyeY+9}" rx="6" ry="3.4" fill="#ff9a9a" opacity=".5"/>`;
+  let extras='';
+  if(shine>=1){ extras+=`
+      <text x="156" y="56" font-size="22" class="spark" style="animation-delay:.1s">✨</text>
+      <text x="26" y="96" font-size="18" class="spark" style="animation-delay:.5s">✨</text>
+      <text x="150" y="140" font-size="16" class="spark" style="animation-delay:.9s">⭐</text>`; }
+  if(mood<1){ extras+=`<text x="138" y="64" font-size="20">💦</text>`; }
+  const crown = opts.crown ? `<text x="100" y="34" font-size="40" text-anchor="middle">👑</text>` : '';
+  return `<svg viewBox="0 0 200 200" width="${opts.w||200}" xmlns="http://www.w3.org/2000/svg">
+    ${body}${hi}${face}${extras}${crown}</svg>`;
+}
 
-  // ground
-  const gy = sy(0);
-  if(gy < H+60){
-    ctx.fillStyle='#8bc34a'; ctx.fillRect(0,gy,W,H-gy+10);
-    ctx.fillStyle='#6da33b'; ctx.fillRect(0,gy,W,8);
-    ctx.fillStyle='#7b5a3a'; ctx.fillRect(0,gy+34,W,H);
-  }
+/* belly scene with intestine + growing poop */
+function bellySVG(growth, res){
+  // growth 0..1 ; res for tint
+  const sc=0.34+growth*0.62;
+  const pal = res?palette(res):{base:'#b98a55',dark:'#8a6238',light:'#d3aa70'};
+  const mood = res? (res.total>=70?2:res.total>=45?1:0) : 2;
+  const poop = poopSVG({pal,mood,shine:0,shape:'banana',w:150*sc});
+  return `
+  <svg viewBox="0 0 300 250" width="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="belly" cx="50%" cy="45%" r="60%">
+        <stop offset="0%" stop-color="#ffe6d2"/><stop offset="100%" stop-color="#ffcdb0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="150" cy="128" rx="135" ry="116" fill="url(#belly)" stroke="#f0b48f" stroke-width="3"/>
+    <!-- coiled intestine -->
+    <g fill="none" stroke="var(--intestine)" stroke-width="20" stroke-linecap="round" opacity=".9">
+      <path d="M60 60 Q150 30 240 60 Q270 110 220 130 Q150 150 90 130 Q45 150 80 195 Q150 225 230 195"/>
+    </g>
+    <g fill="none" stroke="var(--intestine-d)" stroke-width="20" stroke-linecap="round" opacity=".18">
+      <path d="M60 60 Q150 30 240 60 Q270 110 220 130 Q150 150 90 130 Q45 150 80 195 Q150 225 230 195"/>
+    </g>
+    <!-- the poop, nestled lower center -->
+    <g transform="translate(${150-75*sc}, ${118-95*sc})">${poop}</g>
+  </svg>`;
+}
 
-  // tower
-  const n=G.stack.length;
-  const first = Math.max(0, Math.floor((G.camY-(H*0.25))/PH));
-  for(let i=first;i<n;i++){
-    const p=G.stack[i];
-    const x=sx(p.x + swayAt(i+1));
-    const y=sy(i*PH);
-    if(y<-80) break;
-    const cols=tierColors(p.tier, i, G.t);
-    drawPoop(x, y, PW, cols, {face: i===n-1 && !G.falling, mood:'happy'});
-  }
+/* ---------- rendering ---------- */
+function renderMeters(){
+  const a=avg(), order=['fiber','water','prob','fat','sugar','irrit'];
+  $('meters').innerHTML=order.map(k=>{
+    const info=STAT_INFO[k];
+    const pct=Math.min(100, (a[k]/2.4)*100);
+    return `<div class="meter ${info.cls}"><div class="ml"><span>${info.n}</span></div>
+      <div class="bar"><div class="fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
+}
+function renderMenu(){
+  const slot=SLOTS[G.slot];
+  $('mealIcon').textContent=slot.icon;
+  $('mealTitle').textContent=`${G.day+1}日目・${slot.label}`;
+  $('mealSub').textContent=slot.sub;
+  // dots
+  $('dots').innerHTML=Array.from({length:TOTAL_DAYS*3},(_,i)=>{
+    const cls=i<G.mealCount?'done':(i===G.mealCount?'now':'');
+    return `<i class="${cls}"></i>`;
+  }).join('');
+  // pick 6 from slot pool (shuffle deterministic-ish by mealCount)
+  const pool=MENUS[slot.key].slice();
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor((Math.sin((i+1)*(G.mealCount+7))*0.5+0.5)*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  const items=pool.slice(0,6);
+  $('menu').innerHTML=items.map((f,idx)=>{
+    const tags=[];
+    if(f.s.fiber>=2)tags.push('<span class="tg g">繊維</span>');
+    if(f.s.prob>=2)tags.push('<span class="tg g">善玉菌</span>');
+    if(f.s.water>=2)tags.push('<span class="tg g">水分</span>');
+    if(f.s.fat>=2)tags.push('<span class="tg w">脂質</span>');
+    if(f.s.sugar>=2)tags.push('<span class="tg w">糖分</span>');
+    if(f.s.irrit>=2)tags.push('<span class="tg w">刺激</span>');
+    return `<div class="food" data-i="${idx}"><div class="emo">${f.emo}</div>
+      <div class="nm">${f.name}</div><div class="tags">${tags.join('')}</div></div>`;
+  }).join('');
+  $('menu').querySelectorAll('.food').forEach(el=>{
+    el.addEventListener('click',()=>chooseFood(items[+el.dataset.i]));
+  });
+  updateBelly();
+}
+function updateBelly(){
+  const growth=G.mealCount/(TOTAL_DAYS*3);
+  const res=G.mealCount>0?computeResult():null;
+  $('bellyHolder').innerHTML=bellySVG(growth,res);
+  if(G.mealCount===0) $('growComment').textContent='うんこの たね が できた';
+}
+function gainPop(text,color){
+  const holder=$('bellyHolder');
+  const sp=document.createElement('div');
+  sp.className='gain-pop'; sp.textContent=text; sp.style.color=color;
+  sp.style.left=(35+Math.random()*30)+'%'; sp.style.top=(20+Math.random()*20)+'%';
+  sp.style.animation='floatup 1.3s ease forwards';
+  $('bellyHolder').parentElement.appendChild(sp);
+  setTimeout(()=>sp.remove(),1300);
+}
 
-  if(G.state==='play'){
-    // dropper / falling
-    const topY = topWorldY();
-    if(G.falling){
-      const f=G.falling;
-      const cols=tierColors(f.tier, n, G.t);
-      // guide line
-      ctx.setLineDash([6,8]); ctx.strokeStyle='rgba(74,44,23,.35)'; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.moveTo(sx(f.x), sy(f.y)); ctx.lineTo(sx(f.x), sy(topY)); ctx.stroke(); ctx.setLineDash([]);
-      drawPoop(sx(f.x), sy(f.y), PW, cols, {face:true, mood:'worried', rot:f.rot});
+let busy=false;
+function chooseFood(food){
+  if(busy)return; busy=true;
+  ac(); SND.eat();
+  $('eatFlash').classList.remove('go'); void $('eatFlash').offsetWidth; $('eatFlash').classList.add('go');
+  // apply
+  for(const k in food.s) G.sum[k]+=food.s[k];
+  G.mealCount++;
+  // floating gains
+  const order=['fiber','water','prob','fat','sugar','irrit'];
+  let delay=0;
+  order.forEach(k=>{ if(food.s[k]>0){ const info=STAT_INFO[k];
+    setTimeout(()=>gainPop(`${info.n}+${food.s[k]}`, info.cls==='good'?'#4f8f2e':'#d2622f'),delay); delay+=120; } });
+  renderMeters();
+  setTimeout(()=>{
+    updateBelly();
+    const res=computeResult();
+    $('growComment').textContent = res.total>=70?'いい感じに育ってる✨':res.total>=45?'まあまあ育ってきた':'うーん、お腹の調子が心配…';
+    // advance slot/day
+    G.slot++;
+    if(G.slot>=3){
+      G.slot=0;
+      setTimeout(()=>{ busy=false; dayInterim(); },420);
     } else {
-      const dx=dropperX();
-      const dWY = topY + Math.min(300, Math.max(160, sy(topY) - 90));
-      const cols=tierColors(Math.min(Math.floor(G.count/100),TIERS.length-1), n, G.t);
-      // guide
-      ctx.setLineDash([4,10]); ctx.strokeStyle='rgba(74,44,23,.22)'; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.moveTo(sx(dx), sy(dWY)); ctx.lineTo(sx(dx), sy(topY)); ctx.stroke(); ctx.setLineDash([]);
-      // target marker on top
-      ctx.strokeStyle='rgba(255,255,255,.5)';
-      ctx.beginPath(); ctx.moveTo(sx(topEffX())-PW*0.46, sy(topY)-2); ctx.lineTo(sx(topEffX())+PW*0.46, sy(topY)-2); ctx.stroke();
-      drawPoop(sx(dx), sy(dWY), PW, cols, {face:true, mood:'happy', rot:Math.sin(G.t*3)*0.06});
-      // hanging string
-      ctx.strokeStyle='rgba(74,44,23,.4)'; ctx.lineWidth=3;
-      ctx.beginPath(); ctx.moveTo(sx(dx), sy(dWY)-PW*0.8); ctx.lineTo(sx(dx), -10); ctx.stroke();
+      busy=false; renderMenu();
     }
-    // wind streaks
-    const wmag=Math.abs(G.wind);
-    if(wmag>0.05){
-      ctx.strokeStyle=`rgba(255,255,255,${0.25+wmag*0.4})`; ctx.lineWidth=2; ctx.lineCap='round';
-      for(let i=0;i<7;i++){
-        const yy=(i*97 + (G.t*40)%97)%H;
-        const xx=( (i*173 + G.t*(140+260*wmag)*Math.sign(G.wind))%(W+160) +W+160)%(W+160)-80;
-        ctx.beginPath(); ctx.moveTo(xx,yy); ctx.quadraticCurveTo(xx+30*Math.sign(G.wind),yy-4, xx+60*Math.sign(G.wind),yy);
-        ctx.stroke();
-      }
-    }
-  }
-
-  // particles
-  for(const p of G.parts){
-    const cols=tierColors(p.tier,0,G.t);
-    drawPoop(sx(p.x), sy(p.y), PW*0.95, cols, {rot:p.rot, face:true, mood:'worried'});
-  }
-  ctx.restore();
+  },420);
 }
 
-/* ---------- update ---------- */
-let last=performance.now();
-function frame(now){
-  const dt=Math.min(0.033,(now-last)/1000); last=now;
-  G.t += dt;
-
-  if(G.state==='play' || G.state==='topple'){
-    // wind gusts
-    G.windTimer -= dt;
-    if(G.windTimer<=0){
-      G.windTimer = 1.8 + Math.random()*2.5;
-      const m=windMax();
-      G.windTarget = (Math.random()*2-1)*m;
-      if(m>0.3 && Math.random()<0.4) G.windTarget = Math.sign(G.windTarget)*m; // full gust
-    }
-    G.wind += (G.windTarget-G.wind)*Math.min(1,dt*1.2);
-    // wind HUD
-    const wm=Math.max(0.0001,windMax());
-    const wp=G.wind; // -1..1
-    elWindArrow.textContent = Math.abs(wp)<0.04?'─': (wp>0?'→':'←').repeat(Math.min(3,Math.ceil(Math.abs(wp)*3.2)));
-    const pct=Math.min(50,Math.abs(wp)*50/Math.max(0.35,1));
-    elWindFill.style.left = wp>0? '50%' : (50-Math.abs(wp)*50)+'%';
-    elWindFill.style.width = (Math.abs(wp)*50)+'%';
-    elWindFill.style.background = Math.abs(wp)>0.55?'#d8432e':'#3fa7d6';
-
-    // instability slow decay
-    G.inst *= (1 - dt*0.05);
-
-    // falling physics
-    if(G.falling){
-      const f=G.falling;
-      f.vy -= 1500*dt;            // gravity (world y up)
-      f.vx += G.wind*430*dt;      // wind push
-      f.x += f.vx*dt; f.y += f.vy*dt;
-      f.rot = f.vx*0.0006;
-      const restY = topWorldY();
-      if(f.y <= restY){
-        const offset = f.x - topEffX();
-        G.falling=null;
-        land(offset);
-      } else if (f.y < G.camY - 200){
-        G.falling=null; miss();
-      }
-    }
-    // balance dot live update
-    if(!G.falling && G.state==='play' && (G.t*60|0)%6===0) updateHUD();
-
-    // camera
-    const targetY = Math.max(0, topWorldY() - H*0.35);
-    G.camY += (targetY-G.camY)*Math.min(1,dt*4);
-    const tx = G.stack.length? G.stack[G.stack.length-1].x : 0;
-    G.camX += (tx-G.camX)*Math.min(1,dt*2);
-  }
-
-  // particles
-  for(const p of G.parts){
-    p.vy -= 1400*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.rot+=p.vr*dt; p.life-=dt;
-  }
-  G.parts = G.parts.filter(p=>p.life>0 && sy(p.y)<H+150);
-
-  draw(dt);
+function dayInterim(){
+  const res=computeResult();
+  const b=BRISTOL[res.btype];
+  $('dayTitle').textContent=`${G.day+1}日目 おわり 🚽`;
+  $('dayPoop').innerHTML=poopSVG({pal:palette(res),mood:res.total>=70?2:res.total>=45?1:0,
+      shine:res.total>=80?1:0, shape:shapeOf(res.btype), w:150, seed:G.day+1});
+  $('dayVerdict').textContent=`今朝のうんこ：${b.n}`;
+  $('dayVerdict').style.color = res.total>=70?'#4f8f2e':res.total>=45?'#c8861f':'#d2622f';
+  $('dayVerdictSub').textContent=b.d;
+  $('nextDayBtn').textContent = G.day+1>=TOTAL_DAYS ? '最終結果を見る' : 'つぎの日へ';
+  SND.day();
+  show('day');
 }
-function loop(now){ frame(now); requestAnimationFrame(loop); }
-// fallback: rAF and page timers freeze in hidden/embedded webviews, but
-// dedicated-worker timers don't — let a worker drive frames when rAF stalls
-try{
-  const wURL = URL.createObjectURL(new Blob(['setInterval(()=>postMessage(0),33)'],{type:'text/javascript'}));
-  const wk = new Worker(wURL);
-  wk.onmessage = ()=>{ const now=performance.now(); if(now-last>30) frame(now); };
-}catch(e){
-  setInterval(()=>{ const now=performance.now(); if(now-last>100) frame(now); }, 50);
+function shapeOf(bt){ return bt<=2?'pebbles':bt===3?'cracked':bt===4?'banana':bt===5?'soft':'mushy'; }
+
+$('nextDayBtn').addEventListener('click',()=>{
+  G.day++;
+  if(G.day>=TOTAL_DAYS){ finalResult(); }
+  else { renderMenu(); show('play'); }
+});
+
+/* ---------- final ---------- */
+function finalResult(){
+  const res=computeResult();
+  const ri=rankInfo(res.total,res.btype);
+  const b=BRISTOL[res.btype];
+  $('finalPoop').innerHTML=(ri.crown?'<div class="crown">👑</div>':'')+
+    poopSVG({pal:palette(res),mood:res.total>=70?2:res.total>=45?1:0,
+      shine:res.total>=80?1:0, crown:false, shape:shapeOf(res.btype), w:180, seed:99});
+  $('rankTitle').textContent=ri.emoji+' '+ri.t;
+  $('rankTitle').style.color=ri.c;
+  $('bristolBadge').textContent=`ブリストル型：${res.btype} ／ ${b.n}`;
+  $('totalScore').innerHTML=res.total+'<small>点</small>';
+  // bars
+  $('finalBars').innerHTML=Object.entries(res.dims).map(([k,v])=>
+    `<div class="scbar"><span class="lab">${k}</span><span class="track"><span class="v" data-v="${v}"></span></span><span class="num">${v}</span></div>`
+  ).join('');
+  setTimeout(()=>$('finalBars').querySelectorAll('.v').forEach(el=>el.style.width=el.dataset.v+'%'),120);
+  // world ranking
+  renderRanking(res.total);
+  // best
+  const best=+(localStorage.getItem('unkodoBest')||0);
+  if(res.total>best) localStorage.setItem('unkodoBest',res.total);
+  window.__lastResult=res;
+  show('final');
+  if(res.total>=70){ SND.win(); confetti(); } else SND.day();
+}
+function renderRanking(total){
+  const TOTAL_PLAYERS=2847193;
+  const pctTop=Math.max(0.01, Math.pow(1-total/100,1.7)*100); // smaller = better
+  let rank=Math.max(1, Math.round(TOTAL_PLAYERS*pctTop/100));
+  const fmt=n=>n.toLocaleString('en-US');
+  $('worldRank').innerHTML=`🌍 世界 <b>${fmt(rank)}</b> 位<br><span class="pct">${fmt(TOTAL_PLAYERS)}人中　上位 ${pctTop<1?pctTop.toFixed(2):pctTop.toFixed(1)}%</span>`;
+  // leaderboard: top fixed funny + player row
+  const top=[
+    {r:1,nm:'👑 黄金便のカリスマ',sc:99},
+    {r:2,nm:'Dr.ウンコロジー',sc:98},
+    {r:3,nm:'腸活の鬼',sc:97},
+    {r:4,nm:'快便番長',sc:95},
+    {r:5,nm:'フローラ女王',sc:93},
+  ];
+  let html=top.map(t=>`<div class="row"><span class="rk">${t.r}</span><span class="nm">${t.nm}</span><span class="sc">${t.sc}</span></div>`).join('');
+  if(rank>6) html+=`<div class="ellip">⋮</div>`;
+  html+=`<div class="row me"><span class="rk">${rank<=5?rank:fmt(rank)}</span><span class="nm">🫵 あなた</span><span class="sc">${total}</span></div>`;
+  $('leaderboard').innerHTML=html;
+}
+function confetti(){
+  for(let i=0;i<26;i++){const s=document.createElement('span');
+    s.className='confetti';s.textContent=['✨','🎉','💛','⭐','💩','🏆'][i%6];
+    s.style.left=(Math.random()*100)+'vw';s.style.animationDuration=(2.6+Math.random()*3)+'s';
+    s.style.animationDelay=(Math.random()*1.5)+'s';document.body.appendChild(s);
+    setTimeout(()=>s.remove(),6500);}
 }
 
-/* ---------- title ---------- */
-function initTitle(){
-  $('titlebest').textContent = G.best>1? `さいこうきろく：${G.best}こ` : '';
-  if(G.gold) $('titletrophy').classList.remove('hidden');
+$('shareBtn').addEventListener('click',async()=>{
+  const r=window.__lastResult; if(!r)return;
+  const ri=rankInfo(r.total,r.btype);
+  const txt=`【うんこ道】3日間の腸活の結果…\n${ri.emoji}${ri.t}！ ${r.total}点（ブリストル${r.btype}型）\nめざせ世界一の黄金便💩✨`;
+  const url=location.href;
+  try{
+    if(navigator.share){ await navigator.share({title:'うんこ道',text:txt,url}); }
+    else { await navigator.clipboard.writeText(txt+'\n'+url); $('shareBtn').textContent='コピーしたよ！'; setTimeout(()=>$('shareBtn').textContent='結果をシェア',1500); }
+  }catch(e){}
+});
+$('retryBtn').addEventListener('click',()=>{ document.querySelectorAll('.confetti').forEach(c=>c.remove()); startGame(); });
+
+/* ---------- title / start ---------- */
+function refreshBest(){
+  const best=+(localStorage.getItem('unkodoBest')||0);
+  if(best>0){ $('bestBadge').style.display='inline-block'; $('bestBadge').textContent=`🏆 自己ベスト：${best}点`; }
 }
-initTitle();
-// pretty title backdrop: small demo tower
-G.stack=[{x:0,tier:0},{x:4,tier:0},{x:-3,tier:0},{x:2,tier:0},{x:0,tier:0}];
+function startGame(){ ac(); newGame(); renderMeters(); renderMenu(); show('play'); }
+$('startBtn').addEventListener('click',startGame);
+$('howBtn').addEventListener('click',()=>{
+  alert('【あそびかた】\n\n1日3食×3日間、食べるものを選びます。\n\n🌿 食物繊維・💧水分・🦠善玉菌 をバランスよく取ると、つるんとした理想の「黄金バナナ便」に育ちます✨\n\n🍖 脂質・🍰糖分・🌶️刺激物 が多すぎると、コロコロ便や下痢便に…💦\n\n最終的なうんこの美しさ（形・色・ツヤ・香り・快便度）が世界ランキングのスコアになります！');
+});
 
-requestAnimationFrame(loop);
+refreshBest();
+show('title');
 
-/* expose for testing */
-window.__unko = G;
-window.__unkoAPI = { start:startGame, drop:doDrop, land, topple };
+/* expose for tests */
+window.__unko={get G(){return G;}, computeResult, startGame, chooseFood, MENUS, finalResult, dayInterim, newGame};
 </script>
 </body>
 </html>
