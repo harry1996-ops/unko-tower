@@ -93,7 +93,7 @@
 
   /* belly scene */
   .scene{flex:0 0 auto;position:relative;display:flex;align-items:center;justify-content:center;padding:4px 0 0;}
-  .scene svg{width:min(78%,300px);height:auto;display:block;}
+  .scene svg{width:min(64%,250px);height:auto;display:block;}
   .gain-pop{position:absolute;font-weight:900;font-size:15px;pointer-events:none;white-space:nowrap;
     text-shadow:0 1px 2px rgba(255,255,255,.8);}
   @keyframes floatup{0%{opacity:0;transform:translateY(6px) scale(.8);}20%{opacity:1;transform:translateY(0) scale(1);}
@@ -130,6 +130,34 @@
   .tg{font-size:9.5px;font-weight:900;padding:1px 6px;border-radius:99px;line-height:1.5;}
   .tg.g{background:#e4f5d6;color:#4f8f2e;}
   .tg.w{background:#ffe2d3;color:#d2622f;}
+
+  /* text-input meal UI */
+  .menu-wrap{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 6px);}
+  .input-area{padding:4px 16px 8px;}
+  .examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;justify-content:center;}
+  .chip{font-size:12px;font-weight:700;background:#fff;border:2px solid #e6d4b3;border-radius:999px;
+    padding:5px 11px;cursor:pointer;color:#7a5a38;box-shadow:0 2px 0 #e3cfac;}
+  .chip:active{transform:translateY(2px);box-shadow:none;}
+  .input-row{display:flex;gap:8px;}
+  #foodInput{flex:1;min-width:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#5b3a1e;
+    background:#fffaf0;border:2.5px solid #e6d4b3;border-radius:16px;padding:13px 14px;outline:none;
+    box-shadow:inset 0 2px 4px rgba(91,58,30,.08);-webkit-appearance:none;}
+  #foodInput:focus{border-color:var(--accent);}
+  #foodInput::placeholder{color:#c8b18f;font-weight:500;}
+  #foodInput:disabled{opacity:.6;}
+  .btn.eat{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:16px;padding:0 22px;border-radius:16px;
+    flex:0 0 auto;box-shadow:0 4px 0 var(--ink);}
+  .btn.eat:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);}
+  .analysis{padding:2px 16px 14px;text-align:center;animation:fadein .25s ease;}
+  .ana-title{font-family:'Mochiy Pop One',sans-serif;font-size:14px;color:#5b3a1e;margin-bottom:8px;word-break:break-word;}
+  .ana-cats{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:8px;}
+  .ana-cats .cat{font-size:12px;font-weight:900;background:#fff3df;border:2px solid #e6d4b3;border-radius:999px;
+    padding:3px 10px;color:#a4652f;}
+  .ana-stats{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+  .ana-stats .sc{font-size:12px;font-weight:900;border-radius:999px;padding:3px 10px;background:#eee;color:#777;}
+  .ana-stats .sc.g{background:#e4f5d6;color:#4f8f2e;}
+  .ana-stats .sc.w{background:#ffe2d3;color:#d2622f;}
+  .ana-note{font-size:11px;color:#9a7a55;margin-top:8px;font-weight:700;}
 
   /* ============ DAY INTERIM ============ */
   #screen-day,#screen-final{align-items:center;justify-content:center;text-align:center;padding:28px 22px;overflow-y:auto;}
@@ -223,8 +251,15 @@
     <div class="meters" id="meters"></div>
 
     <div class="menu-wrap">
-      <div class="menu-head">メニューをえらぶ <span>（タップで決定）</span></div>
-      <div class="menu" id="menu"></div>
+      <div class="menu-head" id="menuHead">何を食べた？ <span>世界中の料理を入力してOK</span></div>
+      <div class="analysis" id="analysis" style="display:none"></div>
+      <div class="input-area" id="inputArea">
+        <div class="examples" id="examples"></div>
+        <div class="input-row">
+          <input id="foodInput" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="例：寿司、ビリヤニ、ステーキ…">
+          <button class="btn eat" id="eatBtn" data-mode="eat">食べる</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -287,39 +322,92 @@ $('muteBtn').addEventListener('click',e=>{muted=!muted;e.target.textContent=mute
 /* ---------- food data ----------
    stats: fiber 食物繊維 / water 水分 / prob 善玉菌 / fat 脂質 / sugar 糖分 / irrit 刺激
    tags shown to player as hints */
-function F(name,emo,s){ return {name,emo,s:Object.assign({fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0},s)}; }
-const MENUS = {
-  morning:[
-    F('納豆ごはん','🫘',{fiber:2,prob:3}),
-    F('ヨーグルト','🥣',{prob:3,water:1,sugar:1}),
-    F('バナナ','🍌',{fiber:2,sugar:1,water:1}),
-    F('わかめ味噌汁','🍲',{prob:2,water:2,fiber:1}),
-    F('焼きたてパン','🥐',{fat:2,sugar:2}),
-    F('ベーコンエッグ','🍳',{fat:3,prob:0}),
-    F('グラノーラ','🥗',{fiber:2,sugar:2}),
-    F('コーヒー','☕',{irrit:2}),
-  ],
-  noon:[
-    F('野菜たっぷり定食','🥗',{fiber:3,water:1,prob:1}),
-    F('焼き魚定食','🐟',{prob:1,fiber:1,fat:1,water:1}),
-    F('さつまいも','🍠',{fiber:3,sugar:1}),
-    F('こってりラーメン','🍜',{fat:3,sugar:1,water:1,irrit:1}),
-    F('からあげ弁当','🍗',{fat:3,sugar:1}),
-    F('ピザ','🍕',{fat:3,sugar:1}),
-    F('激辛カレー','🍛',{irrit:3,fat:1}),
-    F('きのこソテー','🍄',{fiber:3}),
-  ],
-  night:[
-    F('湯豆腐と小鉢','🍲',{prob:2,fiber:1,water:2}),
-    F('キムチ鍋','🌶️',{prob:2,fiber:2,water:2,irrit:1}),
-    F('ひじきと玄米','🌿',{fiber:3,prob:1}),
-    F('焼肉ガッツリ','🍖',{fat:3}),
-    F('ポテトとビール','🍟',{fat:2,sugar:1,irrit:2,water:1}),
-    F('ショートケーキ','🍰',{sugar:3,fat:1}),
-    F('チョコアイス','🍦',{sugar:3,fat:1}),
-    F('お水ごくごく','💧',{water:3}),
-  ],
-};
+/* ====== 料理テキスト → 栄養（うんこ成分）推定エンジン ======
+   食材・調理法のキーワードから 6成分を加算して推定する。
+   英単語は語頭境界マッチ（"tea"が"steak"に誤反応しないように）。 */
+function R(cat,kw,s){ return {cat,kw,s}; }
+const FOOD_DB = [
+  // --- 食物繊維（野菜・根菜・きのこ・海藻・いも・豆・ナッツ・全粒）---
+  R('🥗 野菜',['サラダ','salad','レタス','lettuce','キャベツ','cabbage','ほうれん','spinach','小松菜','チンゲン','青菜','野菜','vegetable','veggie','ブロッコリー','broccoli','アスパラ','asparagus','セロリ','celery','ケール','kale','オクラ','なす','eggplant','ピーマン','パプリカ','pepper','ズッキーニ','zucchini'],{fiber:2,water:1}),
+  R('🥕 根菜',['ごぼう','れんこん','大根','radish','人参','にんじん','carrot','かぼちゃ','pumpkin','squash','たけのこ','bamboo','ビーツ','beet','かぶ','turnip'],{fiber:2}),
+  R('🍄 きのこ',['きのこ','茸','しいたけ','エリンギ','まいたけ','しめじ','えのき','mushroom','トリュフ','truffle'],{fiber:3}),
+  R('🌿 海藻',['海藻','わかめ','seaweed','のり','海苔','昆布','kombu','ひじき','もずく','めかぶ','寒天','agar'],{fiber:2,prob:1}),
+  R('🍠 さつまいも',['さつまいも','sweet potato','焼き芋','やきいも','スイートポテト','yam'],{fiber:3,sugar:1}),
+  R('🥔 いも',['じゃがいも','potato','マッシュポテト','里芋','長芋','タロ','taro'],{fiber:1,water:1}),
+  R('🌽 とうもろこし',['とうもろこし','コーン','corn','メイズ','maize'],{fiber:2,sugar:1}),
+  R('🥑 アボカド',['アボカド','avocado','ワカモレ','guacamole'],{fiber:2,fat:1}),
+  R('🫘 豆類',['豆','bean','大豆','soy','レンズ','lentil','ひよこ豆','chickpea','フムス','hummus','枝豆','edamame','黒豆','インゲン','ファラフェル','falafel','ダル','dal','あずき','red bean'],{fiber:2,prob:0}),
+  R('🥜 ナッツ・種',['ナッツ','nut','アーモンド','almond','くるみ','walnut','カシュー','cashew','ピスタチオ','ごま','sesame','チア','chia','ピーナッツ','peanut'],{fiber:2,fat:1}),
+  R('🌾 全粒穀物',['玄米','brown rice','全粒','whole grain','オートミール','オーツ','oat','グラノーラ','granola','muesli','キヌア','quinoa','そば','soba','buckwheat','ライ麦','rye','もち麦','大麦','barley','ブルグル'],{fiber:2}),
+  // --- 発酵・善玉菌 ---
+  R('🦠 納豆',['納豆','natto'],{prob:3,fiber:2}),
+  R('🍶 味噌',['味噌','miso','みそ'],{prob:2,water:1}),
+  R('🥛 ヨーグルト',['ヨーグルト','yogurt','yoghurt','ケフィア','kefir','ラッシー','lassi'],{prob:3,water:1,sugar:1}),
+  R('🌶️ キムチ',['キムチ','kimchi'],{prob:2,fiber:1,irrit:1}),
+  R('🥒 発酵食品',['漬物','ぬか','糠','sauerkraut','ザワークラウト','ピクルス','pickle','テンペ','tempeh','コンブチャ','kombucha','甘酒','塩麹','メンマ'],{prob:2}),
+  R('🧀 チーズ',['チーズ','cheese','モッツァレラ','チェダー','パルメザン','カマンベール','feta','フェタ'],{prob:1,fat:2}),
+  // --- 水分 ---
+  R('💧 水分',['水','water','お茶','tea','緑茶','麦茶','ほうじ茶','スープ','soup','だし','broth','白湯','ハーブティー','ミネラルウォーター'],{water:3}),
+  R('🥛 乳',['牛乳','milk','ミルク','豆乳','ソイミルク','オーツミルク'],{water:1,fat:1}),
+  R('🍲 鍋・汁物',['鍋','hot pot','しゃぶ','すき焼き','sukiyaki','おでん','ポトフ','シチュー','stew','味噌汁','豚汁','クッパ','参鶏湯','サムゲタン','フォー','pho','ラクサ','laksa','ボルシチ'],{water:2,fiber:1,prob:1}),
+  R('🍉 水分果実',['すいか','スイカ','watermelon','メロン','melon','梨','pear','ぶどう','grape'],{water:2,sugar:1}),
+  // --- 果物 ---
+  R('🍌 バナナ',['バナナ','banana'],{fiber:2,sugar:1,water:1}),
+  R('🍎 果物',['りんご','apple','キウイ','kiwi','ベリー','berry','いちご','strawberry','ブルーベリー','プルーン','prune','いちじく','fig','ザクロ','pomegranate','柿','persimmon'],{fiber:2,sugar:1}),
+  R('🍊 柑橘・南国果実',['オレンジ','orange','みかん','レモン','lemon','グレープフルーツ','マンゴー','mango','パイナップル','pineapple','桃','peach','パパイヤ','papaya'],{water:1,sugar:1,fiber:1}),
+  // --- 主食（炭水化物・概ね中立）---
+  R('🍚 主食',['ごはん','ご飯','rice','白米','米','パン','bread','トースト','toast','ナン','naan','うどん','udon','パスタ','pasta','スパゲ','spaghetti','ヌードル','noodle','そうめん','ピラフ','pilaf','クスクス','couscous','トルティーヤ','tortilla','肉まん','bao','マカロニ','macaroni','バゲット','ベーグル','bagel'],{}),
+  R('🍳 卵',['卵','たまご','玉子','egg','オムレツ','omelet','omelette','目玉焼き','スクランブル','ゆで卵'],{fat:1}),
+  // --- 魚介（おおむね良好）---
+  R('🍣 寿司・刺身',['寿司','sushi','刺身','sashimi','海鮮','握り','ちらし','手巻き'],{fiber:1,prob:1}),
+  R('🐟 魚介',['魚','fish','鮭','サーモン','salmon','まぐろ','マグロ','tuna','さば','鯖','mackerel','いわし','sardine','焼き魚','海老','エビ','shrimp','prawn','蟹','カニ','crab','貝','牡蠣','oyster','ホタテ','scallop','たこ','octopus','いか','烏賊','squid','うなぎ','eel','あさり','ホッケ','ぶり','ブリ','たい','鯛'],{fat:1,prob:1}),
+  R('🍜 ラーメン',['ラーメン','ramen','中華そば','つけ麺','油そば','担々麺','タンメン'],{fat:2,sugar:1,water:1,irrit:1}),
+  R('🌮 メキシカン',['タコス','taco','ブリトー','burrito','ナチョス','nacho','ケサディ','quesadilla','エンチラーダ','ファヒータ'],{fiber:1,fat:2}),
+  // --- 肉・脂質 ---
+  R('🥩 赤身肉',['牛','beef','ステーキ','steak','ラム','lamb','ハンバーグ','焼肉','yakiniku','bbq','バーベキュー','プルコギ','bulgogi','ローストビーフ','すき焼き'],{fat:3}),
+  R('🐖 豚・加工肉',['豚','pork','ポーク','とんかつ','カツ','cutlet','ベーコン','bacon','ソーセージ','sausage','ハム','ham','スパム','spam','チャーシュー','サラミ','salami','生ハム','prosciutto'],{fat:3}),
+  R('🍗 鶏肉',['鶏','chicken','チキン','唐揚げ','からあげ','fried chicken','ナゲット','nugget','手羽','焼き鳥','yakitori'],{fat:2}),
+  R('🍔 ファストフード',['ハンバーガー','バーガー','burger','ホットドッグ','hot dog','ケバブ','kebab','ピザ','pizza','フライドチキン','ハンバーグ'],{fat:3,sugar:1}),
+  R('🍖 肉',['肉','meat','ジビエ','モツ','ホルモン'],{fat:2}),
+  // --- 揚げ物・高脂質 ---
+  R('🍟 揚げ物',['揚げ','フライ','fried','天ぷら','tempura','フリット','コロッケ','croquette','春巻き','spring roll','ポテト','french fries','fries','チップス','chips','サモサ','samosa','カツ丼'],{fat:3}),
+  R('🍲 アジア飯',['パッタイ','pad thai','ナシゴレン','nasi','ビビンバ','bibimbap','キンパ','gimbap','チャプチェ','カオマンガイ','khao','ガパオ','チヂミ','ヤンニョム','ルーロー飯','海南鶏飯'],{fat:1,fiber:1,sugar:1}),
+  R('🧈 高脂質ソース',['バター','butter','マヨ','mayo','生クリーム','クリーム','cream','カルボナーラ','carbonara','グラタン','gratin','アルフレード','alfredo','ラード','lard','チーズソース'],{fat:3}),
+  // --- 甘味・糖分 ---
+  R('🍰 洋菓子・スイーツ',['ケーキ','cake','チョコ','chocolate','クッキー','cookie','ビスケット','ドーナツ','donut','doughnut','アイス','ice cream','ジェラート','gelato','プリン','pudding','パフェ','タルト','tart','マカロン','macaron','candy','飴','キャンディ','グミ','gummy','マフィン','muffin','パンケーキ','pancake','ワッフル','waffle','クレープ','crepe','チュロス','churro','ティラミス','tiramisu'],{sugar:3,fat:1}),
+  R('🍡 和菓子',['あんこ','餡','大福','まんじゅう','饅頭','どら焼き','団子','だんご','ようかん','羊羹','和菓子','mochi','もち','たい焼き','どらやき','カステラ'],{sugar:2,fiber:1}),
+  R('🍯 甘味料',['砂糖','sugar','はちみつ','蜂蜜','honey','ジャム','jam','シロップ','syrup','メープル','maple','練乳'],{sugar:2}),
+  R('🥤 甘い飲料',['ジュース','juice','コーラ','cola','コーク','coke','ソーダ','soda','サイダー','炭酸','スムージー','smoothie','シェイク','shake','フラペ','frappe','タピオカ','ミルクティー','bubble tea','エナドリ','エナジードリンク','energy drink','スポーツドリンク'],{sugar:3,water:1}),
+  // --- 刺激物・辛味・カフェイン・酒 ---
+  R('🌶️ 辛い料理',['激辛','辛い','spicy','唐辛子','chili','chilli','チリ','麻婆','mapo','タバスコ','tabasco','ハバネロ','トムヤム','tom yum','ラー油','わさび','wasabi','からし','mustard','ペペロンチーノ','タッカルビ','ガパオ','キムチチゲ','火鍋','sichuan','四川','ジャーク','jerk'],{irrit:3,fat:1}),
+  R('🍛 カレー・スパイス',['カレー','curry','ビリヤニ','biryani','マサラ','masala','タンドリー','tandoori','tikka','ガラムマサラ','スパイス'],{irrit:2,fat:1,fiber:1}),
+  R('☕ カフェイン',['コーヒー','coffee','espresso','エスプレッソ','カフェイン','caffeine','レッドブル','red bull','モンスター','カフェラテ','カプチーノ'],{irrit:2}),
+  R('🍺 アルコール',['お酒','sake','ビール','beer','ワイン','wine','ウイスキー','whisky','whiskey','焼酎','カクテル','cocktail','ハイボール','チューハイ','アルコール','alcohol','日本酒','テキーラ','ウォッカ','ラム酒','梅酒','サワー','レモンサワー'],{irrit:2,sugar:1}),
+];
+function kwHit(text,k){
+  k=k.toLowerCase();
+  if(/^[\x00-\x7f]+$/.test(k)){
+    const esc=k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    try{ return new RegExp('(^|[^a-z])'+esc).test(text); }catch(e){ return text.includes(k); }
+  }
+  return text.includes(k);
+}
+function analyzeFood(textRaw){
+  const text=(textRaw||'').toLowerCase().trim();
+  const s={fiber:0,water:0,prob:0,fat:0,sugar:0,irrit:0};
+  const cats=[]; let matched=false;
+  for(const r of FOOD_DB){
+    if(r.kw.some(k=>kwHit(text,k))){
+      matched=true;
+      for(const k in r.s) s[k]+=r.s[k];
+      if(!cats.includes(r.cat)) cats.push(r.cat);
+    }
+  }
+  if(!matched){ s.fiber=1;s.water=1;s.fat=1;s.sugar=1; cats.push('❓ 一般的な食事'); }
+  for(const k in s) s[k]=Math.round(Math.min(3.5,s[k])*10)/10; // per-meal cap
+  return {s,cats:cats.slice(0,5),unknown:!matched};
+}
+const EXAMPLES=['寿司','ビリヤニ','ステーキとサラダ','麻婆豆腐','納豆ごはん','ギリシャヨーグルト','こってりラーメン','タコス','キムチ鍋','チョコケーキ','焼き芋','フォー'];
 const SLOTS=[
   {key:'morning',icon:'🌅',label:'朝食',sub:'今日の朝ごはんは？'},
   {key:'noon',   icon:'☀️',label:'昼食',sub:'ランチタイム！'},
@@ -485,35 +573,55 @@ function renderMeters(){
       <div class="bar"><div class="fill" style="width:${pct}%"></div></div></div>`;
   }).join('');
 }
-function renderMenu(){
+let pendingMeal=null;
+function renderMealInput(){
   const slot=SLOTS[G.slot];
   $('mealIcon').textContent=slot.icon;
   $('mealTitle').textContent=`${G.day+1}日目・${slot.label}`;
   $('mealSub').textContent=slot.sub;
-  // dots
   $('dots').innerHTML=Array.from({length:TOTAL_DAYS*3},(_,i)=>{
     const cls=i<G.mealCount?'done':(i===G.mealCount?'now':'');
     return `<i class="${cls}"></i>`;
   }).join('');
-  // pick 6 from slot pool (shuffle deterministic-ish by mealCount)
-  const pool=MENUS[slot.key].slice();
-  for(let i=pool.length-1;i>0;i--){const j=Math.floor((Math.sin((i+1)*(G.mealCount+7))*0.5+0.5)*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  const items=pool.slice(0,6);
-  $('menu').innerHTML=items.map((f,idx)=>{
-    const tags=[];
-    if(f.s.fiber>=2)tags.push('<span class="tg g">繊維</span>');
-    if(f.s.prob>=2)tags.push('<span class="tg g">善玉菌</span>');
-    if(f.s.water>=2)tags.push('<span class="tg g">水分</span>');
-    if(f.s.fat>=2)tags.push('<span class="tg w">脂質</span>');
-    if(f.s.sugar>=2)tags.push('<span class="tg w">糖分</span>');
-    if(f.s.irrit>=2)tags.push('<span class="tg w">刺激</span>');
-    return `<div class="food" data-i="${idx}"><div class="emo">${f.emo}</div>
-      <div class="nm">${f.name}</div><div class="tags">${tags.join('')}</div></div>`;
-  }).join('');
-  $('menu').querySelectorAll('.food').forEach(el=>{
-    el.addEventListener('click',()=>chooseFood(items[+el.dataset.i]));
-  });
+  $('menuHead').innerHTML=`${slot.label}、何を食べた？ <span>世界中の料理を入力してOK</span>`;
+  $('analysis').style.display='none'; $('analysis').innerHTML='';
+  $('inputArea').style.display='block';
+  const inp=$('foodInput'); inp.value=''; inp.disabled=false;
+  const btn=$('eatBtn'); btn.textContent='食べる'; btn.dataset.mode='eat';
+  $('examples').innerHTML=EXAMPLES.map(e=>`<span class="chip">${e}</span>`).join('');
+  $('examples').querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{inp.value=c.textContent;inp.focus();}));
+  pendingMeal=null;
   updateBelly();
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function showAnalysis(txt,res){
+  const order=[['fiber','食物繊維'],['water','水分'],['prob','善玉菌'],['fat','脂質'],['sugar','糖分'],['irrit','刺激']];
+  const chips=order.filter(([k])=>res.s[k]>0).map(([k,n])=>{
+    const good=(k==='fiber'||k==='water'||k==='prob');
+    const v=res.s[k]%1?res.s[k].toFixed(1):res.s[k];
+    return `<span class="sc ${good?'g':'w'}">${n} +${v}</span>`;
+  }).join('');
+  $('analysis').innerHTML=`<div class="ana-title">🔍「${escapeHtml(txt)}」を消化…</div>
+    <div class="ana-cats">${res.cats.map(c=>`<span class="cat">${c}</span>`).join('')}</div>
+    <div class="ana-stats">${chips||'<span class="sc">影響ほぼなし</span>'}</div>
+    ${res.unknown?'<div class="ana-note">※データになかったので、ざっくり推定したよ</div>':''}`;
+  $('analysis').style.display='block';
+}
+function onEatBtn(){
+  if(busy)return;
+  const btn=$('eatBtn');
+  if(btn.dataset.mode==='eat'){
+    const txt=$('foodInput').value.trim();
+    if(!txt){ $('foodInput').focus(); return; }
+    ac(); beep(520,.06,'triangle',.1,120);
+    const res=analyzeFood(txt);
+    pendingMeal=res.s;
+    showAnalysis(txt,res);
+    btn.textContent='つぎへ ▶'; btn.dataset.mode='next';
+    $('foodInput').disabled=true; $('foodInput').blur();
+  } else {
+    if(pendingMeal){ const s=pendingMeal; pendingMeal=null; eatMeal(s); }
+  }
 }
 function updateBelly(){
   const growth=G.mealCount/(TOTAL_DAYS*3);
@@ -532,18 +640,20 @@ function gainPop(text,color){
 }
 
 let busy=false;
-function chooseFood(food){
+function eatMeal(stats){
   if(busy)return; busy=true;
   ac(); SND.eat();
+  $('analysis').style.display='none';
   $('eatFlash').classList.remove('go'); void $('eatFlash').offsetWidth; $('eatFlash').classList.add('go');
   // apply
-  for(const k in food.s) G.sum[k]+=food.s[k];
+  for(const k in stats) G.sum[k]+=stats[k];
   G.mealCount++;
   // floating gains
   const order=['fiber','water','prob','fat','sugar','irrit'];
   let delay=0;
-  order.forEach(k=>{ if(food.s[k]>0){ const info=STAT_INFO[k];
-    setTimeout(()=>gainPop(`${info.n}+${food.s[k]}`, info.cls==='good'?'#4f8f2e':'#d2622f'),delay); delay+=120; } });
+  order.forEach(k=>{ if(stats[k]>0){ const info=STAT_INFO[k];
+    const v=stats[k]%1?stats[k].toFixed(1):stats[k];
+    setTimeout(()=>gainPop(`${info.n}+${v}`, info.cls==='good'?'#4f8f2e':'#d2622f'),delay); delay+=110; } });
   renderMeters();
   setTimeout(()=>{
     updateBelly();
@@ -555,7 +665,7 @@ function chooseFood(food){
       G.slot=0;
       setTimeout(()=>{ busy=false; dayInterim(); },420);
     } else {
-      busy=false; renderMenu();
+      busy=false; renderMealInput();
     }
   },420);
 }
@@ -578,8 +688,10 @@ function shapeOf(bt){ return bt<=2?'pebbles':bt===3?'cracked':bt===4?'banana':bt
 $('nextDayBtn').addEventListener('click',()=>{
   G.day++;
   if(G.day>=TOTAL_DAYS){ finalResult(); }
-  else { renderMenu(); show('play'); }
+  else { renderMealInput(); show('play'); }
 });
+$('eatBtn').addEventListener('click',onEatBtn);
+$('foodInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); onEatBtn(); }});
 
 /* ---------- final ---------- */
 function finalResult(){
@@ -651,17 +763,17 @@ function refreshBest(){
   const best=+(localStorage.getItem('unkodoBest')||0);
   if(best>0){ $('bestBadge').style.display='inline-block'; $('bestBadge').textContent=`🏆 自己ベスト：${best}点`; }
 }
-function startGame(){ ac(); newGame(); renderMeters(); renderMenu(); show('play'); }
+function startGame(){ ac(); newGame(); renderMeters(); renderMealInput(); show('play'); }
 $('startBtn').addEventListener('click',startGame);
 $('howBtn').addEventListener('click',()=>{
-  alert('【あそびかた】\n\n1日3食×3日間、食べるものを選びます。\n\n🌿 食物繊維・💧水分・🦠善玉菌 をバランスよく取ると、つるんとした理想の「黄金バナナ便」に育ちます✨\n\n🍖 脂質・🍰糖分・🌶️刺激物 が多すぎると、コロコロ便や下痢便に…💦\n\n最終的なうんこの美しさ（形・色・ツヤ・香り・快便度）が世界ランキングのスコアになります！');
+  alert('【あそびかた】\n\n1日3食×3日間、食べたものを自由に入力します。\n（例：寿司、ビリヤニ、ステーキ、麻婆豆腐…世界中の料理OK！）\n\n入力した料理の栄養を自動で解析して、腸内のうんこに反映します。\n\n🌿食物繊維・💧水分・🦠善玉菌 をバランスよく取ると、つるんとした理想の「黄金バナナ便」に育ちます✨\n\n🍖脂質・🍰糖分・🌶️刺激物 が多すぎると、コロコロ便や下痢便に…💦\n\n最終的なうんこの美しさ（形・色・ツヤ・香り・快便度）が世界ランキングのスコアになります！');
 });
 
 refreshBest();
 show('title');
 
 /* expose for tests */
-window.__unko={get G(){return G;}, computeResult, startGame, chooseFood, MENUS, finalResult, dayInterim, newGame};
+window.__unko={get G(){return G;}, computeResult, startGame, eatMeal, analyzeFood, FOOD_DB, finalResult, dayInterim, newGame};
 </script>
 </body>
 </html>
